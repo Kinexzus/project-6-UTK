@@ -3,12 +3,12 @@
 /**
  * Функция возваращает данные о содержимом директории
  * @param string $__fspath - путь до директории, содержащей файловую систему данных пользователей
- * @param string $__upath - путь к директории формата '/user/folder/.../otherfolder'
+ * @param string $__upath - путь к директории формата '\user\folder\...\otherfolder'
  * @return array
  */
 function in_dir($__fspath, $__upath)
 {
-    $path_arr = glob($__fspath . $__upath . '/*');
+    $path_arr = glob($__fspath . $__upath . '\*');
 
     $files_arr = [];    //массив файлов
     $files_arr[0] = $__upath;
@@ -18,7 +18,7 @@ function in_dir($__fspath, $__upath)
         $file_info['type'] = filetype($path);   //тип файла
         $file_info['name'] = basename($path);   //имя файла
         $file_info['size'] = filesize($path);   //размер файла
-        //время последней модификации
+        $file_info['chdate'] = filemtime($path);//время последней модификации
         //права дотупа
 
         $files_arr[] = $file_info;
