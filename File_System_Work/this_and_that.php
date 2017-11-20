@@ -2,13 +2,14 @@
 
 /**
  * Функция возваращает данные о содержимом директории
- * @param string $__fspath - путь до директории, содержащей файловую систему данных пользователей
  * @param string $__upath - путь к директории формата '\user\folder\...\otherfolder'
  * @return array
  */
-function in_dir($__fspath, $__upath)
+function in_dir($__upath)
 {
-    $path_arr = glob($__fspath . $__upath . '\*');
+    $fspath = '..\File_System';
+
+    $path_arr = glob($fspath . $__upath . '\*');
 
     $files_arr = [];    //массив файлов
     $files_arr[0] = $__upath;
