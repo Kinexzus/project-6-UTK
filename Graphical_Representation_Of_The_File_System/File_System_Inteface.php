@@ -6,6 +6,7 @@
  * and open the template in the editor.
  */
 
+//Заполняет выборку из файлов
  function Select_Creter($__upath )
 {
     $file_arr = in_dir($__upath);
@@ -23,7 +24,7 @@
     }
     return $select;
 }
-
+//Заполняет выборку из директорий
 function Dir_Select_Creter($__upath)
 {
     $file_arr = in_dir($__upath);
