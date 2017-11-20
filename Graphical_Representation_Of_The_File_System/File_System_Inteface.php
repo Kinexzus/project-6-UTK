@@ -5,24 +5,39 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var_dump($_REQUEST);
-function Select_Creter()
+
+ function Select_Creter($__upath )
 {
+    $file_arr = in_dir($__upath);
+    unset($file_arr[0]);
+    
     $select = "";
-    	foreach($_REQUEST as $key => $value){
-		$select.= '<option'. $key 
-			.' value="'. $value . '">' . $key . '</option>';		
-	}
+    foreach($file_arr as $value)
+    { 
+        if($value["type"] == 'file' && isset($value["type"]))
+        {
+            $select.= '<option'. ' value="'. $__upath. '/'. $value['name'] . '">'. $value[ 'name' ] ." ". "size" ." ". $value['size']
+            . '</option>';
+        }
+        
+    }
     return $select;
 }
 
-function Dir_Select_Creter()
+function Dir_Select_Creter($__upath)
 {
+    $file_arr = in_dir($__upath);
+    unset($file_arr[0]);
     $select = "";
-    	foreach($_REQUEST as $key => $value){
-		$select.= '<option'. $key 
-			.' value="'. $value . '">' . $key . '</option>';		
-	}
+    foreach($file_arr as $value)
+    {   
+        if($value["type"] == 'dir' && isset($value["type"]))
+        {
+            $select.= '<option'. ' value="'. $__upath. '/'. $value['name'] . '">'. $value[ 'name' ] ." ". "size" ." ". $value['size']
+            . '</option>';
+        }
+        
+    }
     return $select;
 }
 
@@ -30,32 +45,15 @@ $html = '<body>'
                     .'<table>'
                         . '<tr>'
                           . '<form method="POST" action="File_System_Inteface.php">' // Первая форма
-                            . '<td>'.'<select>'.Select_Creter().'</select>'
+                            . '<td>'.'<select>'.Select_Creter($__upath).'</select>'
                             . ' <input type="radio" name="funct" value="Create Directory">Create Directory<Br>
                                 <input type="radio" name="funct" value="Remove">Remove<Br>
                                 <input type="radio" name="funct" value="Download">Download the contents of a file<Br>'
                             . '</td>'
                           . '</form>'
                             . '<form method="POST" action="File_System_Inteface.php">'  // Вторая форма 
-                            . '<td>'.'<select>'.Dir_Select_Creter().'</select>'
+                            . '<td>'.'<select>'.Dir_Select_Creter($__upath).'</select>'
                             . ' <button type="submit" name="funct2" value="Enter">Enter</button><Br>'
-                            . '</td>'
-                          . '</form>'
-                            . '<form method="POST">' // Логин пользователя
-                            . '<td>'
-                            . ' <output>'.'Login'.'</output><Br>'
-                            . '</td>'
-                          . '</form>'
-                            . '</form>' 
-                            . '<form method="POST" action="Access_Rights.php">' // Изменение прав доступа
-                            . '<td>'.'<select>'.Select_Creter().'</select>'
-                            . ' <button type="submit" name="funct3" value="change of access rights">change of access rights</button><Br>'
-                            . '</td>'
-                          . '</form>'
-                            . '</form>'
-                            . '<form method="POST" action="Dispatch.php">' // Подшоузка файда
-                            . '<td>'.'<select>'.Select_Creter().'</select>'
-                            . ' <button type="submit" name="funct4" value="dispatch">dispatch</button><Br>'
                             . '</td>'
                           . '</form>'
                         .'</tr>'
