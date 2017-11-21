@@ -14,7 +14,7 @@ and open the template in the editor.
 <?php
 $_upath = "E:/Talik";
 require_once('..\File_System_Work\File_System_Work.php');
-//Функция выводящая список файлов в каталоге
+
 function File_Form_Creater($__upath )
 {
     $file_arr = in_dir($__upath);
@@ -27,15 +27,15 @@ function File_Form_Creater($__upath )
     {
         if($value["type"] == 'file' && isset($value["type"]))
         {
-            $form.= '<tr><td><p>'. $value[ 'name' ] ." ". "size" ." ". $value['size'] .'</p></td><td><a HREF = " download.php? '.$upath.'/'.$value[ 'name' ].' "> Скачать </a> </td>'
-                    . '<td>'. '<a HREF = " delete.php? '.$upath.'/'.$value[ 'name' ].' " > Удалить </a> '.'</td></tr>';
+            $form.= '<tr><td><p>'. $value[ 'name' ] ." ". "size" ." ". $value['size'] .'</p></td><td><a HREF = " download.php?  name='.$upath.'/'.$value[ 'name' ].' "> Скачать </a> </td>'
+                    . '<td>'. '<a HREF = " delete.php?  name='.$upath.'/'.$value[ 'name' ].' " > Удалить </a> '.'</td><td><a HREF = " change_access.php?  name='.$upath.'/'.$value[ 'name' ].' "> Изменить права доступа </a></td></tr>';
         }
     }
     $form .='</table></form></body>';
     
     return $form;
 }
-//Функция выводящая список директорий в каталоге
+
 function Dir_Form_Creater($__upath)
 {
     $file_arr = in_dir($__upath);
@@ -49,14 +49,14 @@ function Dir_Form_Creater($__upath)
         if($value["type"] == 'dir' && isset($value["type"]))
         {
             $form.= '<tr><td><p><a HREF = "'.$upath.'/'.$value[ 'name' ].' ">>'. $value[ 'name' ] ." ". "size" ." ". $value['size'] .'</a></p></td>'
-                    . '<td>'. '<a HREF = " delete.php? '.$upath.'/'.$value[ 'name' ].' " > Удалить </a> '.'</td></tr>';
+                    . '<td>'. '<a HREF = " delete.php?  name='.$upath.'/'.$value[ 'name' ].' " > Удалить </a> '.'</td><td><a HREF = " change_access.php? name='.$upath.'/'.$value[ 'name' ].' "> Изменить права доступа </a></td></tr>';
         }
     }
     $form .='</table></form></body>';
     
     return $form;
 }
-//Форма дял подгрузки файлов
+
 function Upload_File_Form()
 {
     $form = '<form action="upload.php"  method="post" enctype="mutipart/form-data">'
@@ -67,7 +67,7 @@ function Upload_File_Form()
     return $form;
 
 }
-//Форма для создании директроии
+
 function Create_Dir_Form()
 {
     $form = '<form action="new_dir.php"  method="post">'
@@ -87,3 +87,4 @@ $html = '<table><tr>'
         . '<tr></table>';
 
 echo $html;
+
