@@ -1,64 +1,89 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body>
 <?php
+$_upath = "E:/Talik";
+require_once('..\File_System_Work\File_System_Work.php');
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-//Заполняет выборку из файлов
- function Select_Creter($__upath )
+function File_Form_Creater($__upath )
 {
     $file_arr = in_dir($__upath);
-    unset($file_arr[0]);
+    $upath = $file_arr[0];
+     unset($file_arr[0]);
     
-    $select = "";
-    foreach($file_arr as $value)
-    { 
+    $form = '<body><form><table>';
+    
+    foreach ($file_arr as $value) 
+    {
         if($value["type"] == 'file' && isset($value["type"]))
         {
-            $select.= '<option'. ' value="'. $__upath. '/'. $value['name'] . '">'. $value[ 'name' ] ." ". "size" ." ". $value['size']
-            . '</option>';
+            $form.= '<tr><td><p>'. $value[ 'name' ] ." ". "size" ." ". $value['size'] .'</p></td><td><a HREF = " download.php? '.$upath.'/'.$value[ 'name' ].' "> Скачать </a> </td>'
+                    . '<td>'. '<a HREF = " delete.php? '.$upath.'/'.$value[ 'name' ].' " > Удалить </a> '.'</td></tr>';
         }
-        
     }
-    return $select;
-}
-//Заполняет выборку из директорий
-function Dir_Select_Creter($__upath)
-{
-    $file_arr = in_dir($__upath);
-    unset($file_arr[0]);
-    $select = "";
-    foreach($file_arr as $value)
-    {   
-        if($value["type"] == 'dir' && isset($value["type"]))
-        {
-            $select.= '<option'. ' value="'. $__upath. '/'. $value['name'] . '">'. $value[ 'name' ] ." ". "size" ." ". $value['size']
-            . '</option>';
-        }
-        
-    }
-    return $select;
+    $form .='</table></form></body>';
+    
+    return $form;
 }
 
-$html = '<body>'
-                    .'<table>'
-                        . '<tr>'
-                          . '<form method="POST" action="File_System_Inteface.php">' // Первая форма
-                            . '<td>'.'<select>'.Select_Creter($__upath).'</select>'
-                            . ' <input type="radio" name="funct" value="Create Directory">Create Directory<Br>
-                                <input type="radio" name="funct" value="Remove">Remove<Br>
-                                <input type="radio" name="funct" value="Download">Download the contents of a file<Br>'
-                            . '</td>'
-                          . '</form>'
-                            . '<form method="POST" action="File_System_Inteface.php">'  // Вторая форма 
-                            . '<td>'.'<select>'.Dir_Select_Creter($__upath).'</select>'
-                            . ' <button type="submit" name="funct2" value="Enter">Enter</button><Br>'
-                            . '</td>'
-                          . '</form>'
-                        .'</tr>'
-                    .'</table>'
-		. '</body>';
-	
-	echo $html;
+function Dir_Form_Creater($__upath)
+{
+    $file_arr = in_dir($__upath);
+    $upath = $file_arr[0];
+     unset($file_arr[0]);
+    
+    $form = '<body><form><table>';
+    
+    foreach ($file_arr as $value) 
+    {
+        if($value["type"] == 'dir' && isset($value["type"]))
+        {
+            $form.= '<tr><td><p><a HREF = "'.$upath.'/'.$value[ 'name' ].' ">>'. $value[ 'name' ] ." ". "size" ." ". $value['size'] .'</a></p></td>'
+                    . '<td>'. '<a HREF = " delete.php? '.$upath.'/'.$value[ 'name' ].' " > Удалить </a> '.'</td></tr>';
+        }
+    }
+    $form .='</table></form></body>';
+    
+    return $form;
+}
+
+function Upload_File_Form()
+{
+    $form = '<form action="upload.php"  method="post" enctype="mutipart/form-data">'
+        .'<input type="file"  name="FILE"  size="20"/>'
+        .'<input type="submit"  name="addFile" value="Добавить"/>'
+        .'</form>';
+    
+    return $form;
+
+}
+
+function Create_Dir_Form()
+{
+    $form = '<form action="new_dir.php"  method="post">'
+        .'<input type="text"  name="DIR"  size="20"/>'
+        .'<input type="submit"  name="addDir" value="Добавить"/>'
+        .'</form>';
+    
+    return $form;
+}
+
+$html = '<table><tr>'
+        . '<td>'.Dir_Form_Creater($_upath).'</td>'
+        . '<td>'.File_Form_Creater($_upath).'</td>'
+        
+        . '<td>'.Upload_File_Form().'</td>'
+        . '<td>'.Create_Dir_Form().'</td>'
+        . '<tr></table>';
+
+echo $html;
