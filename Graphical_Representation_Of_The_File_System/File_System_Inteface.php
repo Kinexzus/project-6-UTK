@@ -14,7 +14,7 @@ and open the template in the editor.
 <?php
 $_upath = "E:/Talik";
 require_once('..\File_System_Work\File_System_Work.php');
-
+//Функция выводящая список файлов в каталоге
 function File_Form_Creater($__upath )
 {
     $file_arr = in_dir($__upath);
@@ -35,7 +35,7 @@ function File_Form_Creater($__upath )
     
     return $form;
 }
-
+//Функция выводящая список директорий в каталоге
 function Dir_Form_Creater($__upath)
 {
     $file_arr = in_dir($__upath);
@@ -56,7 +56,7 @@ function Dir_Form_Creater($__upath)
     
     return $form;
 }
-
+//Форма дял подгрузки файлов
 function Upload_File_Form()
 {
     $form = '<form action="upload.php"  method="post" enctype="mutipart/form-data">'
@@ -67,7 +67,7 @@ function Upload_File_Form()
     return $form;
 
 }
-
+//Форма для создании директроии
 function Create_Dir_Form()
 {
     $form = '<form action="new_dir.php"  method="post">'
