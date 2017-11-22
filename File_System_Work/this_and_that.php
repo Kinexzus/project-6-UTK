@@ -18,7 +18,9 @@ function in_dir($__upath)
         $file_info = [];                        //данные о файле:
         $file_info['type'] = filetype($path);   //тип файла
         $file_info['name'] = basename($path);   //имя файла
-        $file_info['size'] = filesize($path);   //размер файла
+        $file_info['size'] = (is_dir($path))    //размер файла
+            ?dirsize($path)
+            :filesize($path);
         $file_info['chdate'] = filemtime($path);//время последней модификации
         //права дотупа
 
@@ -26,4 +28,23 @@ function in_dir($__upath)
     }
 
     return $files_arr;
+}
+
+
+function dirsize($dir) {
+    $totalsize=0;
+    if ($dirstream = @opendir($dir)) {
+        while (false !== ($filename = readdir($dirstream))) {
+            if ($filename!="." && $filename!="..")
+            {
+                if (is_file($dir."/".$filename))
+                    $totalsize+=filesize($dir."/".$filename);
+
+                if (is_dir($dir."/".$filename))
+                    $totalsize+=dirsize($dir."/".$filename);
+            }
+        }
+    }
+    closedir($dirstream);
+    return $totalsize;
 }
