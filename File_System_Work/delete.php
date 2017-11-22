@@ -1,20 +1,29 @@
 <?php
+/**
+ * Скрипт удаления файла или директори
+ * $_REQUEST['file'] - путь внутри файловой системы к удаляемому файлу
+ */
 
 if(!isset($_REQUEST['file']) || !file_exists('..\File_System'.$_REQUEST['file']))
     //обработка ошибки
     exit();
 
-$filename = '..\File_System'.$_REQUEST['file'];
+$file_path = '..\File_System'.$_REQUEST['file'];    //путь на сервере к удаляемому файлу
 
-(is_dir($filename))
-    ?removeDir($filename)
-    :unlink($filename);
+is_dir($file_path)
+    ?removeDir($file_path)
+    :unlink($file_path);
 
 
 
-function removeDir($dir)
+
+/**
+ * Функция производит рекурсивное удаление директории
+ * @param string $__dir_path - путь к директории
+ */
+function removeDir($__dir_path)
 {
-    if ($files_arr = glob($dir."/*"))
+    if ($files_arr = glob($__dir_path."/*"))
     {
         foreach($files_arr as $file)
         {
@@ -24,5 +33,5 @@ function removeDir($dir)
         }
     }
 
-    rmdir($dir);
+    rmdir($__dir_path);
 }
