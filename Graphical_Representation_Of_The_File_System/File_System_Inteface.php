@@ -12,8 +12,11 @@ and open the template in the editor.
     </head>
     <body>
 <?php
-$_upath = "E:/Talik";
-require_once('..\File_System_Work\File_System_Work.php');
+$_upath = (isset($_REQUEST['path']))
+    ? $_REQUEST['path']
+    : '/';  //тут должна быть обработка ошибки
+
+require_once('..\File_System_Work\this_and_that.php');
 
 function File_Form_Creater($__upath )
 {
@@ -27,8 +30,8 @@ function File_Form_Creater($__upath )
     {
         if($value["type"] == 'file' && isset($value["type"]))
         {
-            $form.= '<tr><td><p>'. $value[ 'name' ] ." ". "size" ." ". $value['size'] .'</p></td><td><a HREF = " download.php?  name='.$upath.'/'.$value[ 'name' ].' "> Скачать </a> </td>'
-                    . '<td>'. '<a HREF = " delete.php?  name='.$upath.'/'.$value[ 'name' ].' " > Удалить </a> '.'</td><td><a HREF = " change_access.php?  name='.$upath.'/'.$value[ 'name' ].' "> Изменить права доступа </a></td></tr>';
+            $form.= '<tr><td><p>'.$value['name']." "."size"." ".$value['size'].'</p></td><td><a href = "../File_System_Work/download.php?file='.$upath.'/'.$value['name'].'"> Скачать </a> </td>'
+                    . '<td>'. '<a HREF = "../File_System_Work/delete.php?file='.$upath.'/'.$value[ 'name' ].'" > Удалить </a> '.'</td><td><a href = "change_access.php?name='.$upath.'/'.$value[ 'name' ].' "> Изменить права доступа </a></td></tr>';
         }
     }
     $form .='</table></form></body>';
@@ -48,8 +51,8 @@ function Dir_Form_Creater($__upath)
     {
         if($value["type"] == 'dir' && isset($value["type"]))
         {
-            $form.= '<tr><td><p><a HREF = "'.$upath.'/'.$value[ 'name' ].' ">>'. $value[ 'name' ] ." ". "size" ." ". $value['size'] .'</a></p></td>'
-                    . '<td>'. '<a HREF = " delete.php?  name='.$upath.'/'.$value[ 'name' ].' " > Удалить </a> '.'</td><td><a HREF = " change_access.php? name='.$upath.'/'.$value[ 'name' ].' "> Изменить права доступа </a></td></tr>';
+            $form.= '<tr><td><p><a href = "File_System_Inteface.php?path='.$upath.'/'.$value[ 'name' ].' ">>'. $value[ 'name' ] ." ". "size" ." ". $value['size'] .'</a></p></td>'
+                    . '<td>'. '<a href = "../File_System_Work/delete.php?file='.$upath.'/'.$value[ 'name' ].'" > Удалить </a> '.'</td><td><a href = "change_access.php?name='.$upath.'/'.$value[ 'name' ].' "> Изменить права доступа </a></td></tr>';
         }
     }
     $form .='</table></form></body>';
@@ -59,7 +62,7 @@ function Dir_Form_Creater($__upath)
 
 function Upload_File_Form()
 {
-    $form = '<form action="upload.php"  method="post" enctype="mutipart/form-data">'
+    $form = '<form action="../File_System_Work/upload.php"  method="post" enctype="mutipart/form-data">'
         .'<input type="file"  name="FILE"  size="20"/>'
         .'<input type="submit"  name="addFile" value="Добавить"/>'
         .'</form>';
@@ -70,7 +73,7 @@ function Upload_File_Form()
 
 function Create_Dir_Form()
 {
-    $form = '<form action="new_dir.php"  method="post">'
+    $form = '<form action="../File_System_Work/new_dir.php"  method="post">'
         .'<input type="text"  name="DIR"  size="20"/>'
         .'<input type="submit"  name="addDir" value="Добавить"/>'
         .'</form>';
