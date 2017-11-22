@@ -60,12 +60,13 @@ function Dir_Form_Creater($__upath)
     return $form;
 }
 
-function Upload_File_Form()
+function Upload_File_Form($__upath)
 {
-    $form = '<form action="../File_System_Work/upload.php"  method="post" enctype="mutipart/form-data">'
-        .'<input type="file"  name="FILE"  size="20"/>'
-        .'<input type="submit"  name="addFile" value="Добавить"/>'
-        .'</form>';
+    $form = '<form action="../File_System_Work/upload.php"  method=post enctype=multipart/form-data>
+        <input type="file"  name="FILE"/>
+        <input type="hidden"  name="path"  value="'.$__upath.'"/>
+        <input type="submit"  name="addFile" value="Загрузить"/>
+        </form>';
     
     return $form;
 
@@ -85,7 +86,7 @@ $html = '<table><tr>'
         . '<td>'.Dir_Form_Creater($_upath).'</td>'
         . '<td>'.File_Form_Creater($_upath).'</td>'
         
-        . '<td>'.Upload_File_Form().'</td>'
+        . '<td>'.Upload_File_Form($_upath).'</td>'
         . '<td>'.Create_Dir_Form().'</td>'
         . '<tr></table>';
 
