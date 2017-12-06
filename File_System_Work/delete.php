@@ -1,37 +1,34 @@
 <?php
 /**
  * Скрипт удаления файла или директори
- * $_REQUEST['file'] - путь внутри файловой системы к удаляемому файлу
+ * $_REQUEST['upath'] - путь к удаляемому файлу
+ * $_REQUEST['user'] - ник пользователя
  */
 
-if(!isset($_REQUEST['file']) || !file_exists('..\File_System'.$_REQUEST['file']))
-    //обработка ошибки
-    exit();
+$file_system = '..\File_System';
+$upath = $_REQUEST['upath'];
+$user = $_REQUEST['user'];
 
-$file_path = '..\File_System'.$_REQUEST['file'];    //путь на сервере к удаляемому файлу
+$file_path = $file_system.$upath;
 
-is_dir($file_path)
-    ?removeDir($file_path)
-    :unlink($file_path);
-
-
-
-
-/**
- * Функция производит рекурсивное удаление директории
- * @param string $__dir_path - путь к директории
- */
-function removeDir($__dir_path)
+if(!check_access_right($upath, $user))
 {
-    if ($files_arr = glob($__dir_path."/*"))
-    {
-        foreach($files_arr as $file)
-        {
-            is_dir($file)
-                ? rmDir($file)
-                : unlink($file);
-        }
-    }
-
-    rmdir($__dir_path);
+    echo 'Недостаточно прав';
+    exit;
 }
+
+if (!file_exists($file_path))
+{
+    echo 'Файл не найден';
+    exit;
+}
+
+if(!remove($file_path))
+{
+    echo 'Не удалось удалить файл';
+    exit;
+}
+
+delete_access_rights($file_path);
+echo 'Файл успешно удален';
+exit;

@@ -2,19 +2,22 @@
 /**
  * Скрипт создает новую директорию
  * $_REQUEST['dir'] - имя новой директории
- * $_REQUEST['upath'] - где создавать новую директорию
+ * $_REQUEST['upath'] - текущая директория
  * $_REQUEST['user'] - ник пользователя
  */
 
-require_once 'this_and_that.php';
-
-
-$user = $_REQUEST['user'];
-$dir_name = $_REQUEST['dir'];
-$upath = $_REQUEST['upath'];
 $file_system = '..\File_System';
+$upath = $_REQUEST['upath'];
+$dir_name = $_REQUEST['dir'];
+$user = $_REQUEST['user'];
 
 $new_dir_path = $file_system.$upath.'\\'.$dir_name;
+
+if(!check_access_right($upath, $user))
+{
+    echo 'Недостаточно прав';
+    exit;
+}
 
 if(file_exists($new_dir_path))
 {
@@ -23,4 +26,11 @@ if(file_exists($new_dir_path))
 }
 
 change_access_rights($new_dir_path, [$user]);
-mkdir($new_dir_path);
+if(!mkdir($new_dir_path))
+{
+    echo 'Ошибка создания директории';
+    exit;
+}
+
+echo 'Директория успешно создана';
+exit;

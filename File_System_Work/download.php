@@ -1,44 +1,46 @@
 <?php
 /**
  * Скрипт для скачивания файла с сервера
- * $_REQUEST['file'] - путь внутри файловой систмы к скачиваемому файлу
+ * $_REQUEST['upath'] - путь к запрашиваемому файла
+ * $_REQUEST['user'] - ник пользователя
  */
 
+$file_system = '..\File_System';
+$upath = $_REQUEST['upath'];
+$user = $_REQUEST['user'];
 
-if(!isset($_REQUEST['file']) || !file_exists('..\File_System'.$_REQUEST['file']))
-    //обработка ошибки
-    exit();
+$file_path = $file_system.$upath;
 
-$filename = '..\File_System'.$_REQUEST['file'];
+if(!check_access_right($upath, $user))
+{
+    echo 'Недостаточно прав';
+    exit;
+}
+
+if (!file_exists($file_path))
+{
+    echo 'Файл не найден';
+    exit;
+}
+
+// сбрасываем буфер вывода PHP, чтобы избежать переполнения памяти выделенной под скрипт
+// если этого не сделать файл будет читаться в память полностью!
+if (ob_get_level())
+    ob_end_clean();
 
 if(ini_get('zlib.output_compression'))
     ini_set('zlib.output_compression', 'Off');
 
-$file_extension = strtolower(substr(strrchr($filename,"."),1));
+// заставляем браузер показать окно сохранения файла
+header('Content-Description: File Transfer');
+header('Content-Type: application/octet-stream');
+header('Content-Disposition: attachment; filename=' . basename($file_path));
+header('Content-Transfer-Encoding: binary');
+header('Expires: 0');
+header('Cache-Control: must-revalidate');
+header('Pragma: public');
+header('Content-Length: ' . filesize($file_path));
+// читаем файл и отправляем его пользователю
+readfile($file_path);
 
-switch( $file_extension )
-{
-    case "pdf": $ctype="application/pdf"; break;
-    case "exe": $ctype="application/octet-stream"; break;
-    case "zip": $ctype="application/zip"; break;
-    case "doc": $ctype="application/msword"; break;
-    case "xls": $ctype="application/vnd.ms-excel"; break;
-    case "ppt": $ctype="application/vnd.ms-powerpoint"; break;
-    case "mp3": $ctype="audio/mp3"; break;
-    case "gif": $ctype="image/gif"; break;
-    case "png": $ctype="image/png"; break;
-    case "jpeg":
-    case "jpg": $ctype="image/jpg"; break;
-    default: $ctype="application/force-download";
-}
-
-header("Pragma: public");
-header("Expires: 0");
-header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-header("Cache-Control: private",false); // нужен для Explorer
-header('Content-Type: '.$ctype.'; charset=utf-8');
-header("Content-Disposition: attachment; filename=\"".basename($filename)."\";" );
-header("Content-Transfer-Encoding: binary");
-header("Content-Length: ".filesize($filename));
-
-exit();
+exit;
