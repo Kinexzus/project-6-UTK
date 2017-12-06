@@ -19,8 +19,8 @@ function File_Form_Creater($__upath )
     {
         if($value["type"] == 'file' && isset($value["type"]))
         {
-            $form.= '<tr align="center" class="button1"><td><div style="width:150px; height:30px; overflow:auto;"><p>'.$value['name']." ".'</p><div></td><td><a href = "../File_System_Work/download.php?file='.$upath.'/'.$value['name'].'"> Скачать </a> </td>'
-                    . '<td>'. '<a HREF = "../File_System_Work/delete.php?file='.$upath.'/'.$value[ 'name' ].'" > Удалить </a> '.'</td><td><a href = "change_access.php?name='.$upath.'/'.$value[ 'name' ].' "> Изменить права доступа </a></td></tr>';
+            $form.= '<tr align="center" class="button1"><td><div style="width:150px; height:30px; overflow:auto;"><p>'.$value['name']." ".'</p><div></td><td><a href = "../File_System_Work/download.php?upath='.$upath.'/'.$value['name'].'"> Скачать </a> </td>'
+                    . '<td>'. '<a HREF = "../File_System_Work/delete.php?upath='.$upath.'/'.$value[ 'name' ].'" > Удалить </a> '.'</td><td><a href = "change_access.php?name='.$upath.'/'.$value[ 'name' ].' "> Изменить права доступа </a></td></tr>';
         }
     }
     $form.='</table></div>';
@@ -51,7 +51,7 @@ function Upload_File_Form($__upath)
 {
     $form = '<form action="../File_System_Work/upload.php"  method=post enctype=multipart/form-data class="file-upload">
         <input type="file"  name="FILE"/>
-        <input type="hidden"  name="path"  value="'.$__upath.'"/>
+        <input type="hidden"  name="upath"  value="'.$__upath.'"/>
         <input type="submit"  name="addFile" value="Загрузить"/>
         </form>';
     
@@ -59,10 +59,11 @@ function Upload_File_Form($__upath)
 
 }
 
-function Create_Dir_Form()
+function Create_Dir_Form($__upath)
 {
     $form = '<form action="../File_System_Work/new_dir.php"  method="post">'
-        .'<input type="text"  name="DIR"  size="20"/>'
+        .'<input type="text"  name="dir"  size="20"/>'
+        .'<input type="hidden"  name="upath"  value="'.$__upath.'"/>'
         .'<input type="submit"  name="addDir" value="Добавить"/>'
         .'</form>';
     
@@ -119,7 +120,7 @@ $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://
                                     <td align="center">
 					<table class="creat" bgcolor="#4166F6" width="450" height="auto">
                                             <tr>
-                                                <td align="center">'.Create_Dir_Form().'</td>
+                                                <td align="center">'.Create_Dir_Form($_upath).'</td>
                                             </tr>			
 					</table>
                                     </td>

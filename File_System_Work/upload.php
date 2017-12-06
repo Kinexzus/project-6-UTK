@@ -5,11 +5,13 @@
  * $_REQUEST['upath'] - текущая директория
  * $_REQUEST['user'] - ник пользователя
  */
+require_once 'this_and_that.php';
 
 $file_system = '..\File_System';
 $upath = $_REQUEST['upath'];
 $file_name = basename($_FILES['FILE']['name']);
-$user = $_REQUEST['user'];
+//$user = $_REQUEST['user'];
+$user = 'KiselFool';
 
 $new_file_path = $file_system.$upath.'\\'.$file_name;
 

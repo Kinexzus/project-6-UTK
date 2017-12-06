@@ -6,9 +6,9 @@
  */
 function in_dir($__upath)
 {
-    $fspath = '..\File_System';
+    $file_system = '..\File_System';
 
-    $path_arr = glob($fspath . $__upath . '\*');
+    $path_arr = glob($file_system . $__upath . '\*');
 
     $files_arr = [];    //массив файлов
     $files_arr[0] = $__upath;
@@ -29,7 +29,9 @@ function in_dir($__upath)
         $sql_path = "'".@mysql_real_escape_string($path)."'";
         $result = @mysql_query("SELECT * FROM access_rights WHERE path = $sql_path");
 
-        $users_count = mysql_num_rows($result);
+        $users_count = ($result)
+            ? mysql_num_rows($result)
+            : 0;
         for($i = 0; $i < $users_count; ++$i)
             $access_rights[] = @mysql_fetch_assoc($result);
 
@@ -41,7 +43,11 @@ function in_dir($__upath)
     return $files_arr;
 }
 
-
+/**
+ * Функция вычисления размера директори
+ * @param $dir
+ * @return int
+ */
 function dirsize($dir) {
     $totalsize=0;
     if ($dirstream = @opendir($dir)) {
@@ -63,6 +69,7 @@ function dirsize($dir) {
 /**
  * Функция производит удаление файла / рекурсивное удаление директории
  * @param string $__file_path - путь к удаляемому объекту
+ * @return bool
  */
 function remove($__file_path)
 {
@@ -88,7 +95,9 @@ function check_access_right($__path, $__user_name)
 
     $result = @mysql_query("SELECT * FROM access_rights WHERE path = $sql_path");
 
-    $users_count = mysql_num_rows($result);
+    $users_count = ($result)
+        ? mysql_num_rows($result)
+        : 0;
     for($i = 0; $i < $users_count; ++$i)
         if(@mysql_fetch_assoc($result) == $__user_name || @mysql_fetch_assoc($result) == NULL)
             @mysql_close();

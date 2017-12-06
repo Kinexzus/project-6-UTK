@@ -4,10 +4,12 @@
  * $_REQUEST['upath'] - путь к удаляемому файлу
  * $_REQUEST['user'] - ник пользователя
  */
+require_once 'this_and_that.php';
 
 $file_system = '..\File_System';
 $upath = $_REQUEST['upath'];
-$user = $_REQUEST['user'];
+//$user = $_REQUEST['user'];
+$user = 'KiselFool';
 
 $file_path = $file_system.$upath;
 

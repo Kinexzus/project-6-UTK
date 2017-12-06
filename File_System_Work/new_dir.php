@@ -5,11 +5,13 @@
  * $_REQUEST['upath'] - текущая директория
  * $_REQUEST['user'] - ник пользователя
  */
+require_once 'this_and_that.php';
 
 $file_system = '..\File_System';
 $upath = $_REQUEST['upath'];
 $dir_name = $_REQUEST['dir'];
-$user = $_REQUEST['user'];
+//$user = $_REQUEST['user'];
+$user = 'KiselFool';
 
 $new_dir_path = $file_system.$upath.'\\'.$dir_name;
 
@@ -26,7 +28,7 @@ if(file_exists($new_dir_path))
 }
 
 change_access_rights($new_dir_path, [$user]);
-if(!mkdir($new_dir_path))
+if(!@mkdir($new_dir_path))
 {
     echo 'Ошибка создания директории';
     exit;
