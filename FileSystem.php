@@ -1,6 +1,6 @@
 <?php
 /**
- * Class FileSystem - Класс для работы с файлововй системой облачного хранилища и правами доступа к файлам
+ * Class FileSystem - Класс для работы с файловой системой облачного хранилища и правами доступа к файлам
  */
 class FileSystem
 {
@@ -66,9 +66,11 @@ class FileSystem
     function getRight($__clpath, $__user)
     {
         $file = file($this->rights_path);
-        foreach ($file as $str) {
+        foreach ($file as $str)
+        {
             $rights = explode('::', $str);
-            if ($rights[0] == $__clpath) {
+            if ($rights[0] == $__clpath)
+            {
                 if ($rights[1] == $__user)
                     return 'rw';            //пользователь имеет право на чтение и запись
 
@@ -93,9 +95,9 @@ class FileSystem
         $rights = array();
 
         $file = file($this->rights_path);
-        foreach ($file as $str) {
+        foreach ($file as $str)
+        {
             $rights_tmp = explode('::', $str);
-            $rights['clpath'] = $rights_tmp[0];
             $rights['owner'] = $rights_tmp[1];
             $rights['readers'] = explode(',', $rights_tmp[2]);
         }
@@ -103,34 +105,58 @@ class FileSystem
         return $rights;
     }
 
+
     /**
-     * Метод лишает пользователей прав на файл. Игнорирует владельца файла.
+     * Устанавливает владельца и права пользователей на файл таким образом,
+     * что права на чтение будут иметь только указанные пользователи.
+     * @param string $__clpath - путь к файлу в файловой системе облака
+     * @param string $__owner - логин владельца
+     * @param array $__users - массив логинов пользователей
+     * @return bool
+     */
+    function setRights($__clpath, $__owner, $__users)
+    {
+        $fp = fopen($this->rights_path, 'a');
+        if ($fp)
+        {
+            $readers = implode(',', $__users);
+            $rights = "$__clpath::$__owner::$readers\n";
+            if (fputs($fp, $rights))
+                if (fclose($fp))
+                    return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Изменяет права пользователей на файл таким образом,
+     * что права на чтение будут иметь только указанные пользователи.
+     * Игнорирует владельца файла.
      * @param string $__clpath - путь к файлу в файловой системе облака
      * @param array $__users - массив логинов пользователей
      * @return bool
      */
-    function delRight($__clpath, $__users)
+    function changeRights($__clpath, $__users)
     {
-        //////////////////////////////////////////////////////////
-        ////___ИСКЛЮЧЕНИЕ ДЛЯ НЕСТРОКОВЫХ ЭЛЕМЕНТОВ МАССИВА___////
-        //////////////////////////////////////////////////////////
-
         $text = file($this->rights_path);
-        if ($text) {
-            foreach ($text as $str_key => $str) {
+        if ($text)
+        {
+            foreach ($text as $str_key => $str)
+            {
                 $rights = explode('::', $str);
-                if ($rights[0] == $__clpath) {
-                    $readers = explode(',', $rights[2]);
 
-                    foreach ($readers as $reader_key => $reader)
-                        foreach ($__users as $user_key => $user)
-                            if ($reader == $user)
-                                unset($readers[$reader_key]);
+                if ($rights[0] == $__clpath)
+                {
+                    $new_readers = array();
+                    foreach ($__users as $user)
+                        if($user != $rights[1])
+                            $new_readers[] = $user;
 
-                    $rights[2] = implode(',', $readers);
+                    $rights[2] = implode(',', $new_readers);
+                    $text[$str_key] = implode('::', $rights);
+                    break;
                 }
-
-                $text[$str_key] = implode('::', $rights);
             }
 
             $fp = fopen($this->rights_path, 'w');
@@ -143,19 +169,71 @@ class FileSystem
         return false;
     }
 
+
+//      ///////////////////////////////////////
+//      ////????ЭТОТ МЕТОТ ВООБЩЕ НУЖЕН????////
+//      ///////////////////////////////////////
+//    /**
+//     * Метод лишает пользователей прав на файл. Игнорирует владельца файла.
+//     * Лучше воспользуйтесь методом changeRights. Все равно этот метод недоступен :P
+//     * @param string $__clpath - путь к файлу в файловой системе облака
+//     * @param array $__users - массив логинов пользователей
+//     * @return bool
+//     */
+//    function delRight($__clpath, $__users)
+//    {
+//        //////////////////////////////////////////////////////////
+//        ////___ИСКЛЮЧЕНИЕ ДЛЯ НЕСТРОКОВЫХ ЭЛЕМЕНТОВ МАССИВА___////
+//        //////////////////////////////////////////////////////////
+//
+//        $text = file($this->rights_path);
+//        if ($text) {
+//            foreach ($text as $str_key => $str) {
+//                $rights = explode('::', $str);
+//                if ($rights[0] == $__clpath) {
+//                    $readers = explode(',', $rights[2]);
+//
+//                    foreach ($readers as $reader_key => $reader)
+//                        foreach ($__users as $user_key => $user)
+//                            if ($reader == $user)
+//                                unset($readers[$reader_key]);
+//
+//                    $rights[2] = implode(',', $readers);
+//                    $text[$str_key] = implode('::', $rights);
+//                    break;
+//                }
+//
+//
+//            }
+//
+//            $fp = fopen($this->rights_path, 'w');
+//            if ($fp)
+//                if (fputs($fp, $text))
+//                    if (fclose($fp))
+//                        return true;
+//        }
+//
+//        return false;
+//    }
+
+
     /**
-     * Метод удаляет все права на файл.
+     * Метод удаляет все права на файл. Если это директория, то рекурсивно удаляет права файлов в этой директории
      * @param string $__clpath - путь к файлу в файловой системе облака
      * @return bool
      */
     function delFileRights($__clpath)
     {
         $text = file($this->rights_path);
-        if($text)
-        {
+        if ($text) {
             $new_text = '';
+
+            if(is_dir($this->cl2fs($__clpath)))
+                foreach ($text as $str)
+                    $new_text .= preg_replace("@".$__clpath."[^:]*::[^\n]*\n@", "", $str);
+
             foreach ($text as $str)
-                $new_text .= preg_replace("@$this->rights_path::.*\n@", "\n", $str);
+                $new_text .= preg_replace("@".$__clpath."::[^\n]*\n@", "", $str);
 
             $fp = fopen($this->rights_path, 'w');
             if ($fp)
@@ -168,99 +246,170 @@ class FileSystem
     }
 
     /**
-     * Метод лишает пользователя прав на все файлы
+     * Метод лишает пользователя прав на все файлы.
      * и удаляет все права на файлы, владельцем которых он является.
-     * @param $__user
+     * @param string $__user - логин пользователя
      * @return bool
      */
     function delUserRights($__user)
     {
-        //////////////////////
-        ////___ДОДЕЛАТЬ___////
-        //////////////////////
+        $text = file($this->rights_path);
+        if ($text) {
+            foreach ($text as $str_key => $str) {
+                $rights = explode('::', $str);
+                if ($rights[1] == $__user) {
+                    unset($text[$str_key]);
+                    continue;
+                }
 
-        return true;
+                $readers = explode(',', $rights[2]);
+
+                foreach ($readers as $reader_key => $reader)
+                    if ($reader == $__user)
+                        unset($readers[$reader_key]);
+
+                $rights[2] = implode(',', $readers);
+
+                $text[$str_key] = implode('::', $rights);
+            }
+
+            $fp = fopen($this->rights_path, 'w');
+            if ($fp)
+                if (fputs($fp, $text))
+                    if (fclose($fp))
+                        return true;
+
+            return true;
+        }
+
+        return false;
     }
 
 
     /**
-     * Метод возвращает основную информацию о фйле
+     * Метод добавляет файл в облако.
+     * @param string $__clpath - путь к директории в файловой системе облака, в которую добавляется файл
+     * @param string $__file_name - имя файла
+     * @param string $__tmp_name - временное имя файла на сервере
+     * @return bool
+     */
+    function addFile($__clpath, $__file_name, $__tmp_name = NULL)
+    {
+        $fspath = $this->cl2fs($__clpath);
+        $file_path = $fspath . '/' . $__file_name;
+
+        if ($__tmp_name)
+        {
+            if (move_uploaded_file($__tmp_name, $file_path))
+                return true;
+        } else
+            if (mkdir($file_path))
+                return $file_path;
+
+        return false;
+    }
+
+
+    /**
+     * Метод удаляет файл из облака.
+     * @param string $__clpath - путь к файлу в файловой системе облака
+     * @return bool
+     */
+    function removeFile($__clpath)
+    {
+        $fspath = $this->cl2fs($__clpath);
+
+        $remove = false;
+        if(is_dir($fspath))
+        {
+            $files_arr = glob($fspath."/*");
+            foreach($files_arr as $file)
+                $remove &= $this->removeFile($this->fs2cl($file));
+
+            $remove &= rmdir($fspath);
+        }
+        else
+            $remove = unlink($fspath);
+
+        return $remove;
+    }
+
+
+    /**
+     * Метод возвращает основную информацию о файле.
      * @param string $__clpath - путь к файлу в файловой системе облака
      * @return array
      */
     function getInfo($__clpath)
     {
-        //////////////////////
-        ////___ДОДЕЛАТЬ___////
-        //////////////////////
-
         $fspath = $this->cl2fs($__clpath);
 
-        $info = [];                                                 //данные о файле:
-        if(is_dir($fspath))
-        {
-            $fspath_arr = glob($fspath . '/*');
-
-            foreach($fspath_arr as $fspath)
-                $fspath = $this->fs2cl($fspath);
-                $info[] = $this->getInfo($fspath);
-        }
-        if(is_file($fspath))
-        {
-            $info['name'] = basename($fspath);                      //имя файла
-            $info['type'] = filetype($fspath);                      //тип файла
-            $info['size'] = (is_dir($fspath))                       //размер файла
-                ?dirsize($fspath)
-                :filesize($fspath);
-            $info['chdate'] = filemtime($fspath);                   //время последней модификации
-            $info['access_rights'] = $this->getRights($__clpath);   //права дотупа
-        }
+        $info = [];                                             //данные о файле:
+        $info['name'] = basename($fspath);                      //имя файла
+        $info['type'] = filetype($fspath);                      //тип файла
+        $info['size'] = (is_dir($fspath))                       //размер файла
+            ? dirsize($fspath)
+            : filesize($fspath);
+        $info['chdate'] = filemtime($fspath);                   //время последней модификации
+        $info['access_rights'] = $this->getRights($__clpath);   //права дотупа
 
         return $info;
     }
 
 
+    /**
+     * Метод возвращает список файлов в директории
+     * @param string $__clpath - путь к директории в файловой системе облака
+     * @return array
+     */
+    function getList($__clpath)
+    {
+        $fspath = $this->cl2fs($__clpath);
+
+        $paths = glob("$fspath/*");
+
+        $info = array();
+        foreach ($paths as $path)
+            $ingo[] = $this->getInfo($this->fs2cl($path));
+
+        return $info;
+    }
 
 
-
-
-
-//    function removeFile($__clpath)
+//    /**
+//     * Метод проверки существования файла по заданному пути.
+//     * @param string $__clpath - путь к файлу в файловой системе облака
+//     * @return bool
+//     */
+//    function exists($__clpath)
 //    {
-//        ///////////////////////////////////////////////////////////////
-//        ////___ДОБАВИТЬ РЕКУРСИВНОЕ УДАЛЕНИЕ ПРАВ ДЛЯ ДИРЕКТОРИЙ___////
-//        ///////////////////////////////////////////////////////////////
-//
 //        $fspath = $this->cl2fs($__clpath);
+//        return file_exists($fspath);
+//    }
 //
-//        $remove = false;
-//        if(is_dir($fspath))
-//        {
-//            $files_arr = glob($fspath."/*");
-//            foreach($files_arr as $file)
-//                $remove &= remove($file);
 //
-//            $remove &= rmdir($fspath);
-//        }
-//        else
-//            $remove = unlink($fspath);
-//
-//        if($remove)
-//            $remove = $this->delFileRights($__clpath);
-//
-//        return $remove;
+//    function isFile($__clpath)
+//    {
+//        $fspath = $this->cl2fs($__clpath);
+//        return is_file($fspath);
+//    }
+//    function isDir($__clpath)
+//    {
+//        $fspath = $this->cl2fs($__clpath);
+//        return is_dir($fspath);
 //    }
 
 
-
 }
+
 
 /**
  * Функция вычисления размера директори
  * @param string $fspath
  * @return int
  */
-function dirsize($fspath) {
+function dirsize($fspath)
+{
     $totalsize=0;
     if ($dirstream = @opendir($fspath)) {
         while (false !== ($filename = readdir($dirstream))) {
