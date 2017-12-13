@@ -1,8 +1,22 @@
 <?php
 class _Print //Интерфес облочного хранилища
 {   
-    function Registration_form_creater($error = NULL , $action) //    форма регистрации +
+    private $__action;
+
+
+    public function __construct($action)
     {
+        $this->__action = $action;
+    }
+    
+    function Registration_form_creater($error = NULL) //    форма регистрации +
+    {
+            $error_out = '';
+            if($error !== NULL)
+            {
+                $error_out = '<input type="text" value="'.$error.'" name="login">';
+            }
+        
             $html = '<!DOCTYPE html>
             <html lang="en" >
             <head>
@@ -167,14 +181,14 @@ class _Print //Интерфес облочного хранилища
                             </div>
                             <br>
                             <div class="login">
-                                            <form method="POST" action="'.$action.'">
+                                            <form method="POST" action="'.$this->__action.'">
                                 <input type="text" placeholder="Login" name="login">
                                 <input type="text" placeholder="mail" name="mail">
                                 <input type="password" placeholder="Password" name="password">
                                 <input type="password" placeholder="Conferm" name="passwordcheck">
                                                     <input type="submit" value="register" name="do">
                                                     <input type="submit" value="authorization" name="do">
-                                                    <input type="text" value="'.$error.'" name="login">
+                                                    '.$error_out.'
                                 </form>
                             </div>
               <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -186,8 +200,14 @@ class _Print //Интерфес облочного хранилища
            return $html;
     }
             
-    function Log_Form_creater($error, $action) // форма для авторизации  +
-    {
+    function Log_Form_creater($error = NULL) // форма для авторизации  +
+    {       
+            $error_out = '';
+            if($error !== NULL)
+            {
+                $error_out = '<input type="text" value="'.$error.'" name="login">';
+            }
+        
             $html = '<!DOCTYPE html>
             <html lang="en" >
             <head>
@@ -352,12 +372,12 @@ class _Print //Интерфес облочного хранилища
                             </div>
                             <br>
                             <div class="login">
-                                            <form method="POST" action="'.$action.'">
+                                            <form method="POST" action="'.$this->__action.'">
                                 <input type="text" placeholder="Login" name="login">
                                 <input type="password" placeholder="Password" name=password">
                                 <input type="submit" value="login" name="do">
                                 <input type="submit" value="registration" name="do">
-                                 <input type="text" value="'.$error.'" name="login">
+                                '.$error_out.'
                                 </form>
                             </div>
               <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -369,7 +389,7 @@ class _Print //Интерфес облочного хранилища
             return $html;    
      }
             
-    public function File_Form_Creater($directory_contents,$is_owner, $action) // форма дял отображения списка файлов  +
+    public function File_Form_Creater($directory_contents,$is_owner) // форма дял отображения списка файлов  +
     {
         $file_arr = $directory_contents;
         $upath = $file_arr[0];
@@ -384,8 +404,8 @@ class _Print //Интерфес облочного хранилища
                 $fuctional = "";
                 if($is_owner)
                 {
-                    $fuctional = '<td><a href = "'.$action.'?file_path='.$upath.'/'.$value['name'].'&do=download"> Скачать </a></td>'
-                .'<td>'. '<a href = "'.$action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td><a href = "'.$action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
+                    $fuctional = '<td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value['name'].'&do=download"> Скачать </a></td>'
+                .'<td>'. '<a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
                 }
                 
                 $form.= '<tr align="center" class="button1"><td><div style="width:150px; height:30px; overflow:auto;"><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
@@ -395,7 +415,7 @@ class _Print //Интерфес облочного хранилища
          return $form;
     }
             
-    private function Dir_Form_Creater($directory_contents,$is_owner, $action) // форма для отображения списка дирикторий +
+    private function Dir_Form_Creater($directory_contents,$is_owner) // форма для отображения списка дирикторий +
     {
         $file_arr = $directory_contents;
         $upath = $file_arr[0];
@@ -410,10 +430,10 @@ class _Print //Интерфес облочного хранилища
                 $fuctional = "";
                 if($is_owner)
                 {
-                    $fuctional = '<td><a href = "'.$action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td><a href = "'.$action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
+                    $fuctional = '<td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
                 }
                 
-                 $form.= '<tr align="center" class="button1"><td ><div style="width:150px; height:33px; overflow:auto;"><p><a href = "'.$action.'?path='.$upath.'/'.$value[ 'name' ].'">'. $value[ 'name' ] .'</a></p></div></td>'.$fuctional.'</tr>';
+                 $form.= '<tr align="center" class="button1"><td ><div style="width:150px; height:33px; overflow:auto;"><p><a href = "'.$this->__action.'?path='.$upath.'/'.$value[ 'name' ].'">'. $value[ 'name' ] .'</a></p></div></td>'.$fuctional.'</tr>';
             }
         }
         
@@ -421,9 +441,9 @@ class _Print //Интерфес облочного хранилища
         return $form;            
     }
     
-    public function Logout($user, $action)     // +
+    public function Logout($user)     // +
     {
-        $html = '<form method="POST" action="'.$action.'">
+        $html = '<form method="POST" action="'.$this->__action.'">
                         <p>'.$user.'</p>
                         <button name="do" value="logout" type="submit">Exit</button>
                     </form>';
@@ -432,9 +452,9 @@ class _Print //Интерфес облочного хранилища
     }
 
 
-    public function Upload_File_Form($path, $action) // форма для подгруззки файла  +
+    public function Upload_File_Form($path) // форма для подгруззки файла  +
     {
-        $form = '<form action="'.$action.'"  method=post enctype=multipart/form-data class="file-upload">
+        $form = '<form action="'.$this->__action.'"  method=post enctype=multipart/form-data class="file-upload">
                     <input type="file"  name="file_name"/>
                     <input type="hidden"  name="path"  value="'.$path.'"/>
                     <input type="submit"  name="do" value="upload"/>
@@ -443,9 +463,9 @@ class _Print //Интерфес облочного хранилища
         return $form;
     }
             
-    public function Create_Dir_Form($path, $action) // Создание формы новой дириктории  +
+    public function Create_Dir_Form($path) // Создание формы новой дириктории  +
     {
-        $form = '<form action="'.$action.'"  method="post">'
+        $form = '<form action="'.$this->__action.'"  method="post">'
                 .'<input type="hidden"  name="path"  value="'.$path.'"/>'
                 .'<input type="text"  name="dir_name"  size="20"/>'
                 .'<input type="submit" name="do" value="makeDir"/>'
@@ -547,18 +567,18 @@ class _Print //Интерфес облочного хранилища
             return $users_name_select_list_select;
         }
                     
-    function Access_changer_form($file, $action)   // ССмена прав доступа. Может быть в последствии изменён +
+    function Access_changer_form($file)   // ССмена прав доступа. Может быть в последствии изменён +
     {
         $form .='<table><tr>'
             . '<td>'
-                    . '<form action="'.$action.'" method="post">'
+                    . '<form action="'.$this->__action.'" method="post">'
                     .'<button type="submit" value="changeRights" name="do">Privat</button>'
                     .'<input type="hidden"  name="access"  value="privat"/>'
                     .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
                     . '</form>'
                 .'</td>'
                 . '<td>'
-                    .'<form action="'.$action.'" method="post">'
+                    .'<form action="'.$this->__action.'" method="post">'
                         .$this->Users_Name_Select_List()
                         .'<button type="submit" value="changeRights" name="do">Select</button>'
                         .'<input type="hidden"  name="access"  value="select"/>'
@@ -566,7 +586,7 @@ class _Print //Интерфес облочного хранилища
                     .'</form>'
                 .'</td>'
                 .'<td>'
-                    . '<form action="'.$action.'" method="post">'
+                    . '<form action="'.$this->__action.'" method="post">'
                     .'<button type="submit" value="changeRights" name="do">Public</button>'
                     .'<input type="hidden"  name="access"  value="public"/>'
                     .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
@@ -595,7 +615,7 @@ class _Print //Интерфес облочного хранилища
     
     public function Access_Error_Form($user, $fpath, $action) // форма для ошибок прав доступа  +
     {
-        $html = '<form method="POST" action="'.$action.'">
+        $html = '<form method="POST" action="'.$this->__action.'">
                         <p>Упользователя'.$error.' недостаточно прав на файл'.$fpath.'</p>
                         <button name="do" value="access_error" type="submit">Try again</button>'
                         .'<input type="hidden"  name="user"  value="'.$user.'"/>'
