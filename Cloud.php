@@ -248,4 +248,56 @@ class Cloud
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath);
         return;
     }
+
+    function printRightsMenu($__clpath)
+    {
+        $user = $this->authorizater->getLogin();
+        if (!$user)
+        {
+            echo $this->printer->Log_Form_creater();
+            return;
+        }
+
+        $rights = $this->searcher->getRight($__clpath, $user);
+        if ($rights[1] != 'w')
+        {
+            echo $this->printer->Access_Error_Form($user, $__clpath);
+            return;
+        }
+
+        $users = $this->authorizater->getUsers();
+
+        echo $this->printer->Access_changer_form($__clpath, $users);
+    }
+
+    function changeRights($__clpath, $__users)
+    {
+        $user = $this->authorizater->getLogin();
+        if (!$user)
+        {
+            echo $this->printer->Log_Form_creater();
+            return;
+        }
+
+        $rights = $this->searcher->getRight($__clpath, $user);
+        if ($rights[1] != 'w')
+        {
+            echo $this->printer->Access_Error_Form($user, $__clpath);
+            return;
+        }
+
+        $this->searcher->changeRights($__clpath, $__users);
+
+
+        $dirs = explode('/', $__clpath);
+        array_pop($dirs);
+        $back_clpath = implode('/', $dirs);
+
+        //получаем информацию о содержимом папки пользователя
+        $dirInfo = $this->searcher->getList($back_clpath);
+
+        //рисуем страничку с содержимым папки пользователя
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $back_clpath);
+        return;
+    }
 }

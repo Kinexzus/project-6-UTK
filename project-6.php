@@ -1,8 +1,7 @@
 <?php
-
 require_once 'Cloud.php';
 
-$cloud = new Cloud('../FileSystem', '../rights', '../users');
+$cloud = new Cloud('../FileSystem', '../rights', '../users', './project-6.php');
 
 if(!isset($_REQUEST['do'])){
     $cloud->printLogin();
@@ -65,6 +64,22 @@ switch ($_REQUEST['do']){
         $clpath = $_REQUEST['file_path'];
 
         $cloud->deleteFile($clpath);
+        exit;
+    }
+    case 'changeRightsMenu':{
+        $clpath = $_REQUEST['file_path'];
+
+        $cloud->printRightsMenu($clpath);
+        exit;
+    }
+    case 'changeRights':{
+        $clpath = $_REQUEST['file_path'];
+
+        $users = array();
+        for($i = 1; isset($_REQUEST["Param$i"]); ++$i)
+            $users[] = $_REQUEST["Param$i"];
+
+        $cloud->changeRights($clpath, $users);
         exit;
     }
     default: {
