@@ -395,7 +395,6 @@ class _Print //Интерфес облочного хранилища
         $upath = $file_arr[0];
         unset($file_arr[0]);
     
-        $form = '<div style="width:774px; height: 800px; overflow:auto;"><table class="file" bgcolor="#4166F6" width="700" height="auto">';
     
         foreach ($file_arr as $value) 
         {
@@ -408,7 +407,7 @@ class _Print //Интерфес облочного хранилища
                 .'<td>'. '<a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
                 }
                 
-                $form.= '<tr align="center" class="button1"><td><div style="width:150px; height:30px; overflow:auto;"><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
+                $form.= '<tr align="center" ><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
             }
         }
          $form.='</table></div>';
@@ -421,7 +420,7 @@ class _Print //Интерфес облочного хранилища
         $upath = $file_arr[0];
         unset($file_arr[0]);
     
-        $form = '<div style="width:774px; height: 800px; overflow:auto;"><table class="Dir" bgcolor="#4166F6" width="700" height="500">';
+        $form = '<div style=" height: 800px; overflow:auto;"><table  height="500">';
     
         foreach ($file_arr as $value) 
         {
@@ -433,11 +432,11 @@ class _Print //Интерфес облочного хранилища
                     $fuctional = '<td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
                 }
                 
-                 $form.= '<tr align="center" class="button1"><td ><div style="width:150px; height:33px; overflow:auto;"><p><a href = "'.$this->__action.'?path='.$upath.'/'.$value[ 'name' ].'">'. $value[ 'name' ] .'</a></p></div></td>'.$fuctional.'</tr>';
+                 $form.= '<tr align="center"><td ><p><a href = "'.$this->__action.'?path='.$upath.'/'.$value[ 'name' ].'">'. $value[ 'name' ] .'</a></p></td>'.$fuctional.'</tr>';
             }
         }
         
-        $form.='</table></div>';
+
         return $form;            
     }
     
@@ -485,67 +484,202 @@ class _Print //Интерфес облочного хранилища
             $Upload_File = Upload_File_Form($path);   
         }
         
-        $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-                <html xmlns="http://www.w3.org/1999/xhtml">
-                <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                    <title>Index</title>
-                    <link href="FSI.css" rel="stylesheet" type="text/css" />
-                </head>
-                <body>
-                    <table class="main" width="100%" height="auto">
-                        <tr>
-                            <td align="center">
-                                <table class="head" bgcolor="#439BF9" width="100%" height="auto">
-                                    <tr class="logo">
-                                        <td align="center" bgcolor="#439BF9" width="50%">
-                                            <h1>Project6</h1>
-                                            <h2>Thin client. Cloud storage.</h2>
-                                        </td>
-                                        <td align="right" bgcolor="#2B8CF3" width="50%">
-                                            <ul>
-                                                <li>
-                                                    <p>'.$this->Logout($user).'</p>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    <tr>
-                                </table>
-                            <td>
-                        </tr>
-                        <tr>
-                            <td  align="center">
-                                <table class="middle" bgcolor="#4166F6" width="85%" >
-                                    <tr>
-                                        <td align="center">
-                                            '.$this->Dir_Form_Creater()				
-                                        .'</td >
-                                        <td align="center">
-                                            '.$this->File_Form_Creater()			
-                                        .'</td>
-                                    </tr>
-                                    <tr>
-                                        <td align="center">
-                                            <table class="Upload" bgcolor="#4166F6" width="450" height="auto">
-                                                <tr>
-                                                    <td align="center">'.$Upload_File.'</td>
-                                                </tr>			
-                                            </table>
-                                        </td>
-                                        <td align="center">
-                                            <table class="creat" bgcolor="#4166F6" width="450" height="auto">
-                                                <tr>
-                                                    <td align="center">'.$Create_Dir.'</td>
-                                                </tr>			
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </body>
-                </html>';
+        $html = '<!DOCTYPE html>
+        <html lang="en" >
+        <head>
+         <meta charset="UTF-8">
+         <title>Random Login Form</title>
+  
+  
+  
+                <style>
+                /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
+                @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
+          @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
+
+           A {
+              text-decoration: none; /* Убирает подчеркивание для ссылок */
+             } 
+
+          body{
+                  margin: 0;
+                  padding: 0;
+                  background: #fff;
+
+                  color: #fff;
+                  font-family: Arial;
+                  font-size: 12px;
+          }
+
+          .body{
+                  position: absolute;
+                  top: -20px;
+                  left: -20px;
+                  right: -40px;
+                  bottom: -40px;
+                  width: auto;
+                  height: auto;
+                  background-image: url(http://ginva.com/wp-content/uploads/2012/07/city-skyline-wallpapers-008.jpg);
+                  background-size: cover;
+                  z-index: 0;
+          }
+
+          .grad{
+                  position: absolute;
+                  top: -20px;
+                  left: -20px;
+                  right: -40px;
+                  bottom: -40px;
+                  width: auto;
+                  height: auto;
+                  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
+                  z-index: 1;
+                  opacity: 0.7;
+          }
+
+
+
+          .header div{
+                  float: left;
+                  color: #fff;
+                  font-family: "Exo", sans-serif;
+                  font-size: 35px;
+                  font-weight: 200;
+          }
+
+          .header div span{
+                  color: #5379fa !important;
+          }
+
+
+          .login input[type=text]{
+                  width: 250px;
+                  height: 30px;
+                  background: transparent;
+                  border: 1px solid rgba(255,255,255,0.6);
+                  border-radius: 2px;
+                  color: #fff;
+                  font-family: "Exo", sans-serif;
+                  font-size: 16px;
+                  font-weight: 400;
+                  padding: 4px;
+          }
+
+          .login input[type=password]{
+                  width: 250px;
+                  height: 30px;
+                  background: transparent;
+                  border: 1px solid rgba(255,255,255,0.6);
+                  border-radius: 2px;
+                  color: #fff;
+                  font-family: "Exo", sans-serif;
+                  font-size: 16px;
+                  font-weight: 400;
+                  padding: 4px;
+                  margin-top: 10px;
+          }
+
+          .login input[type=button]{
+                  width: 260px;
+                  height: 35px;
+                  background: #fff;
+                  border: 1px solid #fff;
+                  cursor: pointer;
+                  border-radius: 2px;
+                  color: #a18d6c;
+                  font-family: "Exo", sans-serif;
+                  font-size: 16px;
+                  font-weight: 400;
+                  padding: 6px;
+                  margin-top: 10px;
+          }
+
+          .login input[type=button]:hover{
+                  opacity: 0.8;
+          }
+
+          .login input[type=button]:active{
+                  opacity: 0.6;
+          }
+
+          .login input[type=text]:focus{
+                  outline: none;
+                  border: 1px solid rgba(255,255,255,0.9);
+          }
+
+          .login input[type=password]:focus{
+                  outline: none;
+                  border: 1px solid rgba(255,255,255,0.9);
+          }
+
+          .login input[type=button]:focus{
+                  outline: none;
+          }
+
+          ::-webkit-input-placeholder{
+             color: rgba(255,255,255,0.6);
+          }
+
+          ::-moz-input-placeholder{
+             color: rgba(255,255,255,0.6);
+          }
+              </style>
+
+
+
+          </head>
+
+          <body>
+                           <body>
+                           <div class="body" >
+                              <table  width="100%" height="auto">
+                                  <tr>
+                                      <td align="center">
+                                          <table class="head"  width="100%" height="auto">
+                                              <tr class="header">
+                                                  <td align="center"  width="50%">
+                                                      <h1>Project6</h1>
+                                                      <h2>Thin client. Cloud storage.</h2>
+                                                  </td>
+                                                  <td align="right"  width="50%">
+                                                      <ul>
+                                                          <li>
+                                                            '.$this->Logout($user).'
+                                                          </li>
+                                                      </ul>
+                                                  </td>
+                                              <tr>
+                                          </table>
+                                      <td>
+                                  </tr>
+                                  <tr>
+                                      <td  align="center">
+                                          <table  width="100%" >
+                                              <tr>
+                                                  <td align="center" width="auto">
+                                                      '.$this->Dir_Form_Creater($directory_contents, $is_owner)				
+                                                      .$this->File_Form_Creater($directory_contents, $is_owner)			
+                                                  .'</td>
+                                              </tr>
+                                              <tr>
+                                                  <td align="center">
+                                                      <table >
+                                                          <tr>
+                                                              <td align="center" class="Login">'.$this->Upload_File_Form($path).
+                                                              $this->Create_Dir_Form($path).'</td>
+                                                          </tr>			
+                                                      </table>
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                      </td>
+                                  </tr>
+                              </table>
+                                                  </div>
+                          </body>
+
+          </body>
+          </html>';
 
         return $html;
                 
@@ -553,46 +687,209 @@ class _Print //Интерфес облочного хранилища
             
     public function Users_Name_Select_List($_users_name_list) // список пользователей ввиде  +
     {
+        $i = 1;
         $users_name_list = $_users_name_list;
         //здесь должен быть получен массив имён пользователей
-        $users_name_select_list_select = '<select name="access" multiple="multiple">';
+        $users_name_select_list_select = '';
 
         foreach ($users_name_list as $value) 
         {
-            $users_name_select_list_select.='<option>'.$value.'</option>';
+            $users_name_select_list_select.= '<p><input type="checkbox" name="Param'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
+            ++$i;
         }
-
-            $users_name_select_list_select.='</select>';
-
             return $users_name_select_list_select;
         }
                     
-    function Access_changer_form($file)   // ССмена прав доступа. Может быть в последствии изменён +
+    function Access_changer_form($file, $_users_name_list)   // ССмена прав доступа. Может быть в последствии изменён +
     {
-        $form .='<table><tr>'
-            . '<td>'
-                    . '<form action="'.$this->__action.'" method="post">'
+        $form .='<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Random Login Form</title>
+  
+  
+  
+      <style>
+      /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
+      @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
+
+body{
+	margin: 0;
+	padding: 0;
+	background: #fff;
+
+	color: #fff;
+	font-family: Arial;
+	font-size: 12px;
+}
+
+.body{
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -40px;
+	bottom: -40px;
+	width: auto;
+	height: auto;
+	background-image: url(http://ginva.com/wp-content/uploads/2012/07/city-skyline-wallpapers-008.jpg);
+	background-size: cover;
+	-webkit-filter: blur(5px);
+	z-index: 0;
+}
+
+.grad{
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -40px;
+	bottom: -40px;
+	width: auto;
+	height: auto;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
+	z-index: 1;
+	opacity: 0.7;
+}
+
+.header{
+	position: absolute;
+	top: calc(50% - 35px);
+	left: calc(50% - 255px);
+	z-index: 2;
+}
+
+.header div{
+	float: left;
+	color: #fff;
+	font-family: "Exo", sans-serif;
+	font-size: 35px;
+	font-weight: 200;
+}
+
+.header div span{
+	color: #5379fa !important;
+}
+
+.login{
+	position: absolute;
+	top: calc(50% - 75px);
+	left: calc(50% - 50px);
+	height: 150px;
+	width: 350px;
+	padding: 10px;
+	z-index: 2;
+}
+
+.login input[type=text]{
+	width: 250px;
+	height: 30px;
+	background: transparent;
+	border: 1px solid rgba(255,255,255,0.6);
+	border-radius: 2px;
+	color: #fff;
+	font-family: "Exo", sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	padding: 4px;
+}
+
+.login input[type=password]{
+	width: 250px;
+	height: 30px;
+	background: transparent;
+	border: 1px solid rgba(255,255,255,0.6);
+	border-radius: 2px;
+	color: #fff;
+	font-family: "Exo", sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	padding: 4px;
+	margin-top: 10px;
+}
+
+.login button{
+	width: 260px;
+	height: 35px;
+	background: #fff;
+	border: 1px solid #fff;
+	cursor: pointer;
+	border-radius: 2px;
+	color: #a18d6c;
+	font-family: "Exo", sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	padding: 6px;
+	margin-top: 10px;
+}
+
+.login input[type=button]:hover{
+	opacity: 0.8;
+}
+
+.login input[type=button]:active{
+	opacity: 0.6;
+}
+
+.login input[type=text]:focus{
+	outline: none;
+	border: 1px solid rgba(255,255,255,0.9);
+}
+
+.login input[type=password]:focus{
+	outline: none;
+	border: 1px solid rgba(255,255,255,0.9);
+}
+
+.login input[type=button]:focus{
+	outline: none;
+}
+
+::-webkit-input-placeholder{
+   color: rgba(255,255,255,0.6);
+}
+
+::-moz-input-placeholder{
+   color: rgba(255,255,255,0.6);
+}
+    </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
+</head>
+
+<body>
+  <div class="body"></div>
+		<div class="grad"></div>
+		<div class="header">
+		</div>
+		<br>
+		<div class="login">
+				<form action="'.$this->__action.'" method="post">'
                     .'<button type="submit" value="changeRights" name="do">Privat</button>'
                     .'<input type="hidden"  name="access"  value="privat"/>'
                     .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
-                    . '</form>'
-                .'</td>'
-                . '<td>'
-                    .'<form action="'.$this->__action.'" method="post">'
-                        .$this->Users_Name_Select_List()
+                    . '</form>'	
+                        	
+			.'<form action="'.$this->__action.'" method="post">'
+                        .'<div style=" height: 400px; overflow:auto;">'
+                        .$this->Users_Name_Select_List($_users_name_list)
+                        .'</div>'
                         .'<button type="submit" value="changeRights" name="do">Select</button>'
                         .'<input type="hidden"  name="access"  value="select"/>'
                         .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
                     .'</form>'
-                .'</td>'
-                .'<td>'
-                    . '<form action="'.$this->__action.'" method="post">'
+			
+                         	
+                    .'<form action="'.$this->__action.'" method="post">'
                     .'<button type="submit" value="changeRights" name="do">Public</button>'
                     .'<input type="hidden"  name="access"  value="public"/>'
                     .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
-                    . '</form>'
-                .'</td>'
-                .'</tr></table>';
+                    . '</form>
+		</div>
+
+</body>
+</html>';
     
         return $form;
     } 
@@ -613,7 +910,7 @@ class _Print //Интерфес облочного хранилища
     
     //методРисованияСпискаПользователей($пользователь, $список_пользователей) чёт на въехал 
     
-    public function Access_Error_Form($user, $fpath, $action) // форма для ошибок прав доступа  +
+    public function Access_Error_Form($user, $fpath) // форма для ошибок прав доступа  +
     {
         $html = '<form method="POST" action="'.$this->__action.'">
                         <p>Упользователя'.$error.' недостаточно прав на файл'.$fpath.'</p>
