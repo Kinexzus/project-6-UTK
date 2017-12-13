@@ -6,15 +6,15 @@ require_once 'Print.php';
 
 class Cloud
 {
+    private $authorizater;
     private $searcher;
     private $printer;
-    private $autorizater;
 
-    function __construct($__cloud_path, $__rights_path, $__users_path)
+    function __construct($__cloud_path, $__rights_path, $__users_path, $__action)
     {
+        //$this->autorizater = new Autorization($__users_path);
         $this->searcher = new FileSystem($__cloud_path, $__rights_path);
-        $this->printer = new _Print();
-        //$this->loginer = new Loginer($__users_path);
+        $this->printer = new _Print($__action);
     }
 
     /*
@@ -59,18 +59,18 @@ class Cloud
      */
     function register($__login, $__password, $__mail)
     {
-        if ($this->autorizater->loginExists($__login)) {
+        if ($this->authorizater->loginExists($__login)) {
             echo $this->printer->Registration_form_creater("Логин занят");
             return;
         }
 
-        if ($this->autorizater->mailExists($__mail)) {
+        if ($this->authorizater->mailExists($__mail)) {
             echo $this->printer->Registration_form_creater("Почта занята");
             return;
         }
 
         //регистрируем пользователя
-        $this->autorizater->register($__login, $__password, $__mail);
+        $this->authorizater->register($__login, $__password, $__mail);
 
         //создаем директорию под пользователя
         $this->searcher->addFile('/', $__login);
@@ -92,14 +92,14 @@ class Cloud
      */
     function login($__login, $__password)
     {
-        if ($this->autorizater->loginCheck($__login, $__password))
+        if ($this->authorizater->loginCheck($__login, $__password))
         {
             echo $this->printer->Log_Form_creater("Неверный логин или пароль");
             return;
         }
 
         //автоизуем пользователя
-        $this->autorizater->login($__login);
+        $this->authorizater->login($__login);
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->searcher->getList("/$__login");
@@ -114,7 +114,7 @@ class Cloud
      */
     function logout()
     {
-        $this->autorizater->logout();
+        $this->authorizater->logout();
 
         echo $this->printer->Log_Form_creater();
         return;
@@ -123,7 +123,7 @@ class Cloud
 
     function openDir($__clpath)
     {
-        $user = $this->autorizater->getLogin();
+        $user = $this->authorizater->getLogin();
         if (!$user)
         {
             echo $this->printer->Log_Form_creater();
@@ -149,7 +149,7 @@ class Cloud
 
     function makeDir($__clpath, $__dir_name)
     {
-        $user = $this->autorizater->getLogin();
+        $user = $this->authorizater->getLogin();
         if (!$user)
         {
             echo $this->printer->Log_Form_creater();
@@ -177,7 +177,7 @@ class Cloud
 
     function uploadFile($__clpath, $__file_name, $__tmp_name)
     {
-        $user = $this->autorizater->getLogin();
+        $user = $this->authorizater->getLogin();
         if (!$user)
         {
             echo $this->printer->Log_Form_creater();
@@ -204,7 +204,7 @@ class Cloud
 
     function downloadFile($__clpath)
     {
-        $user = $this->autorizater->getLogin();
+        $user = $this->authorizater->getLogin();
         if (!$user)
         {
             echo $this->printer->Log_Form_creater();
@@ -224,7 +224,7 @@ class Cloud
 
     function deleteFile($__clpath)
     {
-        $user = $this->autorizater->getLogin();
+        $user = $this->authorizater->getLogin();
         if (!$user)
         {
             echo $this->printer->Log_Form_creater();
