@@ -183,9 +183,9 @@ class _Print //Интерфес облочного хранилища
                             <div class="login">
                                             <form method="POST" action="'.$this->__action.'">
                                 <input type="text" placeholder="Login" name="login" value="'.$login.'">
-                                <input type="text" placeholder="mail" name="mail" value="'.$mail.'">
                                 <input type="password" placeholder="Password" name="password">
                                 <input type="password" placeholder="Conferm" name="passwordcheck">
+                               <input type="text" placeholder="mail" name="mail" value="'.$mail.'">
                                                     <input type="submit" value="register" name="do">
                                                     <input type="submit" value="authorization" name="do">
                                                     '.$error_out.'
@@ -374,7 +374,7 @@ class _Print //Интерфес облочного хранилища
                             <div class="login">
                                             <form method="POST" action="'.$this->__action.'">
                                 <input type="text" placeholder="Login" name="login" value="'.$login.'">
-                                <input type="password" placeholder="Password" name=password">
+                                <input type="password" placeholder="Password" name="password">
                                 <input type="submit" value="login" name="do">
                                 <input type="submit" value="registration" name="do">
                                 '.$error_out.'
