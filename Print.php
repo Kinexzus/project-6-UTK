@@ -9,7 +9,7 @@ class _Print //Интерфес облочного хранилища
         $this->__action = $action;
     }
     
-    function Registration_form_creater($error = NULL) //    форма регистрации +
+    function Registration_form_creater($error = NULL, $login = "", $mail = "") //    форма регистрации +
     {
             $error_out = '';
             if($error !== NULL)
@@ -182,8 +182,8 @@ class _Print //Интерфес облочного хранилища
                             <br>
                             <div class="login">
                                             <form method="POST" action="'.$this->__action.'">
-                                <input type="text" placeholder="Login" name="login">
-                                <input type="text" placeholder="mail" name="mail">
+                                <input type="text" placeholder="Login" name="login" value="'.$login.'">
+                                <input type="text" placeholder="mail" name="mail" value="'.$mail.'">
                                 <input type="password" placeholder="Password" name="password">
                                 <input type="password" placeholder="Conferm" name="passwordcheck">
                                                     <input type="submit" value="register" name="do">
@@ -200,7 +200,7 @@ class _Print //Интерфес облочного хранилища
            return $html;
     }
             
-    function Log_Form_creater($error = NULL) // форма для авторизации  +
+    function Log_Form_creater($error = NULL, $login = "") // форма для авторизации  +
     {       
             $error_out = '';
             if($error !== NULL)
@@ -373,7 +373,7 @@ class _Print //Интерфес облочного хранилища
                             <br>
                             <div class="login">
                                             <form method="POST" action="'.$this->__action.'">
-                                <input type="text" placeholder="Login" name="login">
+                                <input type="text" placeholder="Login" name="login" value="'.$login.'">
                                 <input type="password" placeholder="Password" name=password">
                                 <input type="submit" value="login" name="do">
                                 <input type="submit" value="registration" name="do">
