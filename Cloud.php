@@ -4,6 +4,9 @@ require_once 'FileSystem.php';
 //require_once 'Login.php';
 require_once 'Print.php';
 
+define('MINCHARSLOGIN', 4, true);
+define('MINCHARSPASS', 6, true);
+
 class Cloud
 {
     private $authorizater;
@@ -57,15 +60,38 @@ class Cloud
      * @param $__mail
      * @return void
      */
-    function register($__login, $__password, $__mail)
+    function register($__login, $__password, $__passwordcheck, $__mail)
     {
-        if ($this->authorizater->loginExists($__login)) {
-            echo $this->printer->Registration_form_creater("Логин занят");
-            return;
-        }
+        $__mail = mb_strtolower($__mail);
 
-        if ($this->authorizater->mailExists($__mail)) {
-            echo $this->printer->Registration_form_creater("Почта занята");
+        $errors_arr = array();
+
+        //Проверка корректности логина
+        if(preg_match('#[@#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__login))
+            $errors_arr[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
+        elseif ($this->authorizater->loginExists($__login))
+            $errors_arr[] = "Логин занят";
+        if(strlen($__login) < MINCHARSLOGIN)//MINCHARSPASS
+            $errors_arr[] = "Слишком короткий логин. Необходимо неменее ".MINCHARSLOGIN." символов ";
+
+        //Проверка корректности пароля
+        if(preg_match('#[@#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__password))
+            $errors_arr[] = "Некорректный парроль. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
+        if(strlen($__password) < MINCHARSPASS)
+            $errors_arr[] = "Слишком короткий пароль. Необходимо неменее ".MINCHARSLOGIN." символов ";
+        if($__password != $__passwordcheck)
+            $errors_arr[] = "Неверный повтор ввода пароля";
+
+        //Проверка почтового адреса
+        if(!preg_match('/(([a-z0-9\.\-]+)@([a-z0-9\.\-]+\.[a-z]+))/uis', $__mail))
+            $errors_arr[] = "Некорректный адрес электронной почты";
+        elseif($this->authorizater->mailExists($__mail))
+            $errors_arr[] = "Почта занята";
+
+        if(!count($errors_arr))
+        {
+            $errors_str = implode('\n', $errors_arr);
+            echo $this->printer->Registration_form_creater($errors_str);
             return;
         }
 

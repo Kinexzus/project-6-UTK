@@ -21,8 +21,9 @@ switch ($_REQUEST['do']){
     case 'register':{
         $login = $_REQUEST['login'];
         $password = $_REQUEST['password'];
+        $passwordcheck = $_REQUEST['passwordcheck'];
         $mail = $_REQUEST['mail'];
-        $cloud->register($login, $password, $mail);
+        $cloud->register($login, $password, $passwordcheck, $mail);
         exit;
     }
     case 'login':{
