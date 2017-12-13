@@ -77,11 +77,11 @@ class FileSystem
                 $users = explode(',', $rights[2]);
                 foreach ($users as $user)
                     if ($user == $__user)
-                        return 'r';         //пользователь имеет право на чтение
+                        return 'r-';         //пользователь имеет право на чтение
             }
         }
 
-        return '';                          //пользователь не имеет никаких прав на файл
+        return '--';                          //пользователь не имеет никаких прав на файл
     }
 
 
@@ -285,6 +285,10 @@ class FileSystem
         return false;
     }
 
+    function fileExists($__clpath)
+    {
+        return file_exists($this->cl2fs($__clpath));
+    }
 
     /**
      * Метод добавляет файл в облако.
@@ -307,6 +311,30 @@ class FileSystem
                 return $file_path;
 
         return false;
+    }
+
+
+    function giveFile($__clpath)
+    {
+        $fspath = $this->cl2fs($__clpath);
+
+        // сбрасываем буфер вывода PHP, чтобы избежать переполнения памяти выделенной под скрипт
+// если этого не сделать файл будет читаться в память полностью!
+        if (ob_get_level())
+            ob_end_clean();
+        if(ini_get('zlib.output_compression'))
+            ini_set('zlib.output_compression', 'Off');
+// заставляем браузер показать окно сохранения файла
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . basename($fspath));
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($fspath));
+// читаем файл и отправляем его пользователю
+        readfile($fspath);
     }
 
 
@@ -333,7 +361,6 @@ class FileSystem
 
         return $remove;
     }
-
 
     /**
      * Метод возвращает основную информацию о файле.
