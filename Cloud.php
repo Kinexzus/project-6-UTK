@@ -67,7 +67,7 @@ class Cloud
         $errors_arr = array();
 
         //Проверка корректности логина
-        if(preg_match('#[@#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__login))
+        if(preg_match('#[@\#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__login))
             $errors_arr[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
         elseif ($this->authorizater->loginExists($__login))
             $errors_arr[] = "Логин занят";
@@ -75,7 +75,7 @@ class Cloud
             $errors_arr[] = "Слишком короткий логин. Необходимо неменее ".MINCHARSLOGIN." символов ";
 
         //Проверка корректности пароля
-        if(preg_match('#[@#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__password))
+        if(preg_match('#[@\#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__password))
             $errors_arr[] = "Некорректный парроль. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
         if(strlen($__password) < MINCHARSPASS)
             $errors_arr[] = "Слишком короткий пароль. Необходимо неменее ".MINCHARSLOGIN." символов ";
@@ -91,7 +91,7 @@ class Cloud
         if(!count($errors_arr))
         {
             $errors_str = implode('\n', $errors_arr);
-            echo $this->printer->Registration_form_creater($errors_str);
+            echo $this->printer->Registration_form_creater($errors_str, $__login, $__mail);
             return;
         }
 
@@ -120,7 +120,7 @@ class Cloud
     {
         if ($this->authorizater->loginCheck($__login, $__password))
         {
-            echo $this->printer->Log_Form_creater("Неверный логин или пароль");
+            echo $this->printer->Log_Form_creater("Неверный логин или пароль", $__login);
             return;
         }
 

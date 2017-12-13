@@ -23,12 +23,14 @@ switch ($_REQUEST['do']){
         $password = $_REQUEST['password'];
         $passwordcheck = $_REQUEST['passwordcheck'];
         $mail = $_REQUEST['mail'];
+        var_dump($_REQUEST);
         $cloud->register($login, $password, $passwordcheck, $mail);
         exit;
     }
     case 'login':{
         $login = $_REQUEST['login'];
-        $password = $_REQUEST['password'];
+        $password = $_REQUEST['password"'];
+        var_dump($_REQUEST);
         $cloud->login($login, $password);
         exit;
     }
