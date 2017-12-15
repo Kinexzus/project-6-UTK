@@ -65,22 +65,30 @@ class FileSystem
      */
     function getRight($__clpath, $__user)
     {
-        $file = file($this->rights_path);
-        foreach ($file as $str)
+        $file = fopen($this->rights_path, 'r');
+        while(!feof($file))
         {
+            $str = trim(fgets($file), "\n");
             $rights = explode('::', $str);
             if ($rights[0] == $__clpath)
             {
                 if ($rights[1] == $__user)
+                {
+                    fclose($file);
                     return 'rw';            //пользователь имеет право на чтение и запись
+                }
+
 
                 $users = explode(',', $rights[2]);
                 foreach ($users as $user)
-                    if ($user == $__user)
+                    if ($user == $__user) {
+                        fclose($file);
                         return 'r-';         //пользователь имеет право на чтение
+                    }
             }
         }
 
+        fclose($file);
         return '--';                          //пользователь не имеет никаких прав на файл
     }
 
@@ -94,14 +102,21 @@ class FileSystem
     {
         $rights = array();
 
-        $file = file($this->rights_path);
-        foreach ($file as $str)
+        $file = fopen($this->rights_path, 'r');
+        while(!feof($file))
         {
+            $str = trim(fgets($file), "\n");
             $rights_tmp = explode('::', $str);
-            $rights['owner'] = $rights_tmp[1];
-            $rights['readers'] = explode(',', $rights_tmp[2]);
+            if(isset($rights_tmp[0]) && $rights_tmp[0] == $__clpath)
+            {
+                $rights['owner'] = $rights_tmp[1];
+                $rights['readers'] = explode(',', $rights_tmp[2]);
+                fclose($file);
+                return $rights;
+            }
         }
 
+        fclose($file);
         return $rights;
     }
 
@@ -116,13 +131,13 @@ class FileSystem
      */
     function setRights($__clpath, $__owner, $__users)
     {
-        $fp = fopen($this->rights_path, 'a');
-        if ($fp)
+        $file = fopen($this->rights_path, 'a');
+        if ($file)
         {
             $readers = implode(',', $__users);
             $rights = "$__clpath::$__owner::$readers\n";
-            if (fputs($fp, $rights))
-                if (fclose($fp))
+            if (fputs($file, $rights))
+                if (fclose($file))
                     return true;
         }
 
@@ -139,7 +154,8 @@ class FileSystem
      */
     function changeRights($__clpath, $__users)
     {
-        $text = file($this->rights_path);
+        $text = explode("\n", file_get_contents($this->rights_path));
+        array_pop($text);
         if ($text)
         {
             foreach ($text as $str_key => $str)
@@ -161,7 +177,7 @@ class FileSystem
 
             $fp = fopen($this->rights_path, 'w');
             if ($fp)
-                if (fputs($fp, $text))
+                if (fputs($fp, implode("\n", $text)))
                     if (fclose($fp))
                         return true;
         }
@@ -300,15 +316,27 @@ class FileSystem
     function addFile($__clpath, $__file_name, $__tmp_name = NULL)
     {
         $fspath = $this->cl2fs($__clpath);
+
         $file_path = $fspath . '/' . $__file_name;
+        $i = 0;
+        while(file_exists($file_path))
+        {
+            ++$i;
+            $name_parts = explode('.', $__file_name);
+            if(count($name_parts) > 1)
+                $name_parts[count($name_parts) - 2] .= "($i)";
+            else
+                $name_parts[0] .= "($i)";
+            $file_path = $fspath . '/' . implode('.', $name_parts);
+        }
 
         if ($__tmp_name)
         {
             if (move_uploaded_file($__tmp_name, $file_path))
-                return true;
+                return $this->fs2cl($file_path);
         } else
             if (mkdir($file_path))
-                return $file_path;
+                return $this->fs2cl($file_path);
 
         return false;
     }
@@ -354,10 +382,10 @@ class FileSystem
             foreach($files_arr as $file)
                 $remove &= $this->removeFile($this->fs2cl($file));
 
-            $remove &= rmdir($fspath);
+            $remove &= @rmdir($fspath);
         }
         else
-            $remove = unlink($fspath);
+            $remove = @unlink($fspath);
 
         return $remove;
     }
@@ -396,8 +424,9 @@ class FileSystem
         $paths = glob("$fspath/*");
 
         $info = array();
+        $info[0] = $__clpath;
         foreach ($paths as $path)
-            $ingo[] = $this->getInfo($this->fs2cl($path));
+            $info[] = $this->getInfo($this->fs2cl($path));
 
         return $info;
     }

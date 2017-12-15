@@ -23,14 +23,12 @@ switch ($_REQUEST['do']){
         $password = $_REQUEST['password'];
         $passwordcheck = $_REQUEST['passwordcheck'];
         $mail = $_REQUEST['mail'];
-        var_dump($_REQUEST);
         $cloud->register($login, $password, $passwordcheck, $mail);
         exit;
     }
     case 'login':{
         $login = $_REQUEST['login'];
-        $password = $_REQUEST['password"'];
-        var_dump($_REQUEST);
+        $password = $_REQUEST['password'];
         $cloud->login($login, $password);
         exit;
     }
@@ -49,10 +47,9 @@ switch ($_REQUEST['do']){
         exit;
     }
     case 'upload':{
-        $file_name = $_FILES['FILE']['name'];
-        $tmp_name = $_FILES['FILE']['tmp_name'];
+        $file_name = $_FILES['file_name']['name'];
+        $tmp_name = $_FILES['file_name']['tmp_name'];
         $clpath = $_REQUEST['path'];
-
         $cloud->uploadFile($clpath, $file_name, $tmp_name);
         exit;
     }

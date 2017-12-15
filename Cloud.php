@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 <?php
+require_once 'Authorizater.php';
 require_once 'FileSystem.php';
-//require_once 'Login.php';
 require_once 'Print.php';
 
 define('MINCHARSLOGIN', 4, true);
@@ -10,13 +10,13 @@ define('MINCHARSPASS', 6, true);
 class Cloud
 {
     private $authorizater;
-    private $searcher;
+    private $fileSystem;
     private $printer;
 
     function __construct($__cloud_path, $__rights_path, $__users_path, $__action)
     {
-        //$this->autorizater = new Autorization($__users_path);
-        $this->searcher = new FileSystem($__cloud_path, $__rights_path);
+        $this->authorizater = new Authorizater($__users_path);
+        $this->fileSystem = new FileSystem($__cloud_path, $__rights_path);
         $this->printer = new _Print($__action);
     }
 
@@ -42,7 +42,18 @@ class Cloud
      */
     function printRegistration()
     {
-        echo $this->printer->Registration_form_creater();
+        $user = $this->authorizater->getLogin();
+        if (!$user)
+        {
+            echo $this->printer->Registration_form_creater();;
+            return;
+        }
+
+        $dirInfo = $this->fileSystem->getList("/$user");
+
+        //рисуем страничку с содержимым директории пользователя
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "/$user");
+        return;
     }
 
     /**
@@ -50,7 +61,18 @@ class Cloud
      */
     function printLogin()
     {
-        echo $this->printer->Log_Form_creater();
+        $user = $this->authorizater->getLogin();
+        if (!$user)
+        {
+            echo $this->printer->Log_Form_creater();
+            return;
+        }
+
+        $dirInfo = $this->fileSystem->getList("/$user");
+
+        //рисуем страничку с содержимым директории пользователя
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "/$user");
+        return;
     }
 
     /**
@@ -67,16 +89,16 @@ class Cloud
         $errors_arr = array();
 
         //Проверка корректности логина
-        if(preg_match('#[@\#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__login))
-            $errors_arr[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
-        elseif ($this->authorizater->loginExists($__login))
-            $errors_arr[] = "Логин занят";
-        if(strlen($__login) < MINCHARSLOGIN)//MINCHARSPASS
+//        if(preg_match('#[@\#$%^&*№!?;.,:~+-="\'`<>\[\]{}()|\\|/]#', $__login))
+//            $errors_arr[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
+        if ($this->authorizater->loginExists($__login))
+              $errors_arr[] = "Логин занят";
+        if(strlen($__login) < MINCHARSLOGIN)
             $errors_arr[] = "Слишком короткий логин. Необходимо неменее ".MINCHARSLOGIN." символов ";
 
         //Проверка корректности пароля
-        if(preg_match('#[@\#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__password))
-            $errors_arr[] = "Некорректный парроль. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
+//        if(preg_match('#[@\#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__password))
+//            $errors_arr[] = "Некорректный парроль. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
         if(strlen($__password) < MINCHARSPASS)
             $errors_arr[] = "Слишком короткий пароль. Необходимо неменее ".MINCHARSLOGIN." символов ";
         if($__password != $__passwordcheck)
@@ -88,7 +110,7 @@ class Cloud
         elseif($this->authorizater->mailExists($__mail))
             $errors_arr[] = "Почта занята";
 
-        if(!count($errors_arr))
+        if(count($errors_arr))
         {
             $errors_str = implode('\n', $errors_arr);
             echo $this->printer->Registration_form_creater($errors_str, $__login, $__mail);
@@ -97,13 +119,14 @@ class Cloud
 
         //регистрируем пользователя
         $this->authorizater->register($__login, $__password, $__mail);
+        $this->authorizater->login($__login);
 
         //создаем директорию под пользователя
-        $this->searcher->addFile('/', $__login);
+        $this->fileSystem->addFile('/', $__login);
         //устанавливаем на нее дефолтные права
-        $this->searcher->setRights("/$__login", $__login, []);
+        $this->fileSystem->setRights("/$__login", $__login, []);
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->searcher->getList("/$__login");
+        $dirInfo = $this->fileSystem->getList("/$__login");
 
         //рисуем страничку с содержимым директории пользователя
         echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "/$__login");
@@ -118,7 +141,7 @@ class Cloud
      */
     function login($__login, $__password)
     {
-        if ($this->authorizater->loginCheck($__login, $__password))
+        if (!$this->authorizater->loginCheck($__login, $__password))
         {
             echo $this->printer->Log_Form_creater("Неверный логин или пароль", $__login);
             return;
@@ -128,9 +151,10 @@ class Cloud
         $this->authorizater->login($__login);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->searcher->getList("/$__login");
+        $dirInfo = $this->fileSystem->getList("/$__login");
 
         //рисуем страничку с содержимым папки пользователя
+
         echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "/$__login");
         return;
     }
@@ -156,7 +180,7 @@ class Cloud
             return;
         }
 
-        $rights = $this->searcher->getRight($__clpath, $user);
+        $rights = $this->fileSystem->getRight($__clpath, $user);
         if ($rights[0] != 'r')
         {
             echo $this->printer->Access_Error_Form($user, $__clpath);
@@ -164,7 +188,7 @@ class Cloud
         }
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->searcher->getList($__clpath);
+        $dirInfo = $this->fileSystem->getList($__clpath);
         $is_owner = ($rights[1] != 'w');
 
         //рисуем страничку с содержимым папки пользователя
@@ -182,18 +206,18 @@ class Cloud
             return;
         }
 
-        $rights = $this->searcher->getRight($__clpath, $user);
+        $rights = $this->fileSystem->getRight($__clpath, $user);
         if ($rights[1] != 'w')
         {
             echo $this->printer->Access_Error_Form($user, $__clpath);
             return;
         }
 
-        $this->searcher->addFile($__clpath, $__dir_name);
-        $this->searcher->setRights("$__clpath/$__dir_name", $user, []);
+        $this->fileSystem->addFile($__clpath, $__dir_name);
+        $this->fileSystem->setRights("$__clpath/$__dir_name", $user, []);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->searcher->getList($__clpath);
+        $dirInfo = $this->fileSystem->getList($__clpath);
 
         //рисуем страничку с содержимым папки пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath);
@@ -210,18 +234,18 @@ class Cloud
             return;
         }
 
-        $rights = $this->searcher->getRight($__clpath, $user);
+        $rights = $this->fileSystem->getRight($__clpath, $user);
         if ($rights[1] != 'w')
         {
             echo $this->printer->Access_Error_Form($user, $__clpath);
             return;
         }
 
-        $this->searcher->addFile($__clpath, $__file_name, $__tmp_name);
-        $this->searcher->setRights("$__clpath/$__file_name", $user, []);
+        $file_path = $this->fileSystem->addFile($__clpath, $__file_name, $__tmp_name);
+        $this->fileSystem->setRights($file_path, $user, []);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->searcher->getList($__clpath);
+        $dirInfo = $this->fileSystem->getList($__clpath);
 
         //рисуем страничку с содержимым папки пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath);
@@ -237,14 +261,14 @@ class Cloud
             return;
         }
 
-        $rights = $this->searcher->getRight($__clpath, $user);
+        $rights = $this->fileSystem->getRight($__clpath, $user);
         if ($rights[0] != 'r')
         {
             echo $this->printer->Access_Error_Form($user, $__clpath);
             return;
         }
 
-        $this->searcher->giveFile($__clpath);
+        $this->fileSystem->giveFile($__clpath);
         return;
     }
 
@@ -257,21 +281,24 @@ class Cloud
             return;
         }
 
-        $rights = $this->searcher->getRight($__clpath, $user);
+        $rights = $this->fileSystem->getRight($__clpath, $user);
         if ($rights[1] != 'w')
         {
             echo $this->printer->Access_Error_Form($user, $__clpath);
             return;
         }
 
-        $this->searcher->removeFile($__clpath);
-        $this->searcher->delFileRights($__clpath);
+        $this->fileSystem->removeFile($__clpath);
+        $this->fileSystem->delFileRights($__clpath);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->searcher->getList($__clpath);
+        $dirs = explode('/', $__clpath);
+        array_pop($dirs);
+        $clpath = implode('/', $dirs);
+        $dirInfo = $this->fileSystem->getList($clpath);
 
         //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath);
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $clpath);
         return;
     }
 
@@ -284,7 +311,7 @@ class Cloud
             return;
         }
 
-        $rights = $this->searcher->getRight($__clpath, $user);
+        $rights = $this->fileSystem->getRight($__clpath, $user);
         if ($rights[1] != 'w')
         {
             echo $this->printer->Access_Error_Form($user, $__clpath);
@@ -305,14 +332,14 @@ class Cloud
             return;
         }
 
-        $rights = $this->searcher->getRight($__clpath, $user);
+        $rights = $this->fileSystem->getRight($__clpath, $user);
         if ($rights[1] != 'w')
         {
             echo $this->printer->Access_Error_Form($user, $__clpath);
             return;
         }
 
-        $this->searcher->changeRights($__clpath, $__users);
+        $this->fileSystem->changeRights($__clpath, $__users);
 
 
         $dirs = explode('/', $__clpath);
@@ -320,7 +347,7 @@ class Cloud
         $back_clpath = implode('/', $dirs);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->searcher->getList($back_clpath);
+        $dirInfo = $this->fileSystem->getList($back_clpath);
 
         //рисуем страничку с содержимым папки пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $back_clpath);

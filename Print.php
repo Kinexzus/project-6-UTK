@@ -395,7 +395,7 @@ class _Print //Интерфес облочного хранилища
         $upath = $file_arr[0];
         unset($file_arr[0]);
     
-    
+        $form = '';
         foreach ($file_arr as $value) 
         {
             if($value["type"] == 'file' && isset($value["type"]))
@@ -480,8 +480,8 @@ class _Print //Интерфес облочного хранилища
         
         if($is_owner === TRUE)
         {
-            $Create_Dir = Create_Dir_Form($path);
-            $Upload_File = Upload_File_Form($path);   
+            $Create_Dir = $this->Create_Dir_Form($path);
+            $Upload_File = $this->Upload_File_Form($path);
         }
         
         $html = '<!DOCTYPE html>
@@ -913,7 +913,7 @@ body{
     public function Access_Error_Form($user, $fpath) // форма для ошибок прав доступа  +
     {
         $html = '<form method="POST" action="'.$this->__action.'">
-                        <p>Упользователя'.$error.' недостаточно прав на файл'.$fpath.'</p>
+                        <p>Упользователя'.$user.' недостаточно прав на файл'.$fpath.'</p>
                         <button name="do" value="access_error" type="submit">Try again</button>'
                         .'<input type="hidden"  name="user"  value="'.$user.'"/>'
                         .'<input type="hidden"  name="file"  value="'.$fpath.'"/>
