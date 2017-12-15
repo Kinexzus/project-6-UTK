@@ -29,6 +29,8 @@ class Authorizater
         $file = fopen($this->users_path, 'r');
         while(!feof($file)) {
             $str = trim(fgets($file), "\n");
+            if(!$str)
+                continue;
             $data = explode('::', $str);
             if ($data[0] == $__login)
                 return true;
@@ -42,6 +44,8 @@ class Authorizater
         $file = fopen($this->users_path, 'r');
         while(!feof($file)) {
             $str = trim(fgets($file), "\n");
+            if(!$str)
+                continue;
             $data = explode('::', $str);
             if ($data[2] == $__mail)
                 return true;
@@ -82,5 +86,20 @@ class Authorizater
         return $_COOKIE['login'];
     }
 
-    //function hetUsers()
+    function getUsers()
+    {
+        $users = [];
+        $user = $this->getLogin();
+        $file = fopen($this->users_path, 'r');
+        while(!feof($file)) {
+            $str = trim(fgets($file), "\n");
+            if(!$str)
+                continue;
+            $data = explode('::', $str);
+            if(isset($data[0]) && $data[0] != $user)
+                $users[] = $data[0];
+        }
+
+        return $users;
+    }
 }

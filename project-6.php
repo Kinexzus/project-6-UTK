@@ -37,7 +37,7 @@ switch ($_REQUEST['do']){
         exit;
     }
     case 'openDir':{
-        $clpath = $_REQUEST['dir_path'];
+        $clpath = $_REQUEST['path'];
         $cloud->openDir($clpath);
         exit;
     }
@@ -74,6 +74,22 @@ switch ($_REQUEST['do']){
     }
     case 'changeRights':{
         $clpath = $_REQUEST['file_path'];
+
+        if(isset($_REQUEST['access']))
+        {
+            if($_REQUEST['access'] == 'privat')
+            {
+                $cloud->changeRights($clpath, []);
+                exit;
+            }
+            if($_REQUEST['access'] == 'public')
+            {
+                $cloud->changeRights($clpath, NULL);
+                exit;
+            }
+        }
+
+
 
         $users = array();
         for($i = 1; isset($_REQUEST["Param$i"]); ++$i)

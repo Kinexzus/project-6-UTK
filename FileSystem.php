@@ -78,6 +78,11 @@ class FileSystem
                     return 'rw';            //пользователь имеет право на чтение и запись
                 }
 
+                if($rights[2] == '@')
+                {
+                    fclose($file);
+                    return 'r-';         //пользователь имеет право на чтение
+                }
 
                 $users = explode(',', $rights[2]);
                 foreach ($users as $user)
@@ -126,7 +131,7 @@ class FileSystem
      * что права на чтение будут иметь только указанные пользователи.
      * @param string $__clpath - путь к файлу в файловой системе облака
      * @param string $__owner - логин владельца
-     * @param array $__users - массив логинов пользователей
+     * @param array|null $__users - массив логинов пользователей
      * @return bool
      */
     function setRights($__clpath, $__owner, $__users)
@@ -134,6 +139,13 @@ class FileSystem
         $file = fopen($this->rights_path, 'a');
         if ($file)
         {
+            if($__users == NULL)
+            {
+                $rights = "$__clpath::$__owner::@\n";
+                if (fputs($file, $rights))
+                    if (fclose($file))
+                        return true;
+            }
             $readers = implode(',', $__users);
             $rights = "$__clpath::$__owner::$readers\n";
             if (fputs($file, $rights))
@@ -165,6 +177,12 @@ class FileSystem
                 if ($rights[0] == $__clpath)
                 {
                     $new_readers = array();
+                    if($__users == NULL)
+                    {
+                        $rights[2] = '@';
+                        $text[$str_key] = implode('::', $rights);
+                        break;
+                    }
                     foreach ($__users as $user)
                         if($user != $rights[1])
                             $new_readers[] = $user;

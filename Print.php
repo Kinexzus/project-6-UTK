@@ -421,7 +421,7 @@ class _Print //Интерфес облочного хранилища
                     $fuctional = '<td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
                 }
                 
-                 $form.= '<tr align="center"><td ><p><a href = "'.$this->__action.'?path='.$upath.'/'.$value[ 'name' ].'">'. $value[ 'name' ] .'</a></p></td>'.$fuctional.'</tr>';
+                 $form.= '<tr align="center"><td ><p><a href = "'.$this->__action.'?path='.$upath.'/'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></p></td>'.$fuctional.'</tr>';
             }
         }
         
@@ -588,7 +588,7 @@ body a{
                     
     function Access_changer_form($file, $_users_name_list)   // ССмена прав доступа. Может быть в последствии изменён +
     {
-        $form .='<!DOCTYPE html>
+        $form ='<!DOCTYPE html>
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
