@@ -26,14 +26,11 @@ class _Print //Интерфес облочного хранилища
 
 
                   <style>
-                  /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
-                  @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
-            @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
 
             body{
                     margin: 0;
                     padding: 0;
-                    background: #fff;
+                    background: #000;
 
                     color: #fff;
                     font-family: Arial;
@@ -47,11 +44,7 @@ class _Print //Интерфес облочного хранилища
                     right: -40px;
                     bottom: -40px;
                     width: auto;
-                    height: auto;
-                    background-image: url(http://ginva.com/wp-content/uploads/2012/07/city-skyline-wallpapers-008.jpg);
-                    background-size: cover;
-                    -webkit-filter: blur(5px);
-                    z-index: 0;
+                    height: auto;;
             }
 
             .grad{
@@ -130,7 +123,7 @@ class _Print //Интерфес облочного хранилища
                     border: 1px solid #fff;
                     cursor: pointer;
                     border-radius: 2px;
-                    color: #a18d6c;
+                    color: #000;
                     font-family: ."Exo"., sans-serif;
                     font-size: 16px;
                     font-weight: 400;
@@ -224,7 +217,7 @@ class _Print //Интерфес облочного хранилища
             body{
                     margin: 0;
                     padding: 0;
-                    background: #fff;
+                    background: #000;
 
                     color: #fff;
                     font-family: Arial;
@@ -239,10 +232,6 @@ class _Print //Интерфес облочного хранилища
                     bottom: -40px;
                     width: auto;
                     height: auto;
-                    background-image: url(http://ginva.com/wp-content/uploads/2012/07/city-skyline-wallpapers-008.jpg);
-                    background-size: cover;
-                    -webkit-filter: blur(5px);
-                    z-index: 0;
             }
 
             .grad{
@@ -321,7 +310,7 @@ class _Print //Интерфес облочного хранилища
                     border: 1px solid #fff;
                     cursor: pointer;
                     border-radius: 2px;
-                    color: #a18d6c;
+                    color: #000;
                     font-family: ."Exo"., sans-serif;
                     font-size: 16px;
                     font-weight: 400;
@@ -489,141 +478,40 @@ class _Print //Интерфес облочного хранилища
         <head>
          <meta charset="UTF-8">
          <title>Random Login Form</title>
-  
-  
-  
-                <style>
-                /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
-                @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
-          @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
 
-           A {
-              text-decoration: none; /* Убирает подчеркивание для ссылок */
-             } 
+ <style>
+ A {
+    text-decoration: none; /* Убирает подчеркивание для ссылок */
+   } 
 
-          body{
-                  margin: 0;
-                  padding: 0;
-                  background: #fff;
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
 
-                  color: #fff;
-                  font-family: Arial;
-                  font-size: 12px;
-          }
+	color: #fff;
+	font-family: Arial;
+	font-size: 12px;
+}
 
-          .body{
-                  position: absolute;
-                  top: -20px;
-                  left: -20px;
-                  right: -40px;
-                  bottom: -40px;
-                  width: auto;
-                  height: auto;
-                  background-image: url(http://ginva.com/wp-content/uploads/2012/07/city-skyline-wallpapers-008.jpg);
-                  background-size: cover;
-                  z-index: 0;
-          }
+body a{
+        color: #fff;
+	font-family: Arial;
+            font-size: 16px;
+}
 
-          .grad{
-                  position: absolute;
-                  top: -20px;
-                  left: -20px;
-                  right: -40px;
-                  bottom: -40px;
-                  width: auto;
-                  height: auto;
-                  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
-                  z-index: 1;
-                  opacity: 0.7;
-          }
+.body{
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -40px;
+	bottom: -40px;
+	width: auto;
+	height: auto;
+}
 
+    </style>
 
-
-          .header div{
-                  float: left;
-                  color: #fff;
-                  font-family: "Exo", sans-serif;
-                  font-size: 35px;
-                  font-weight: 200;
-          }
-
-          .header div span{
-                  color: #5379fa !important;
-          }
-
-
-          .login input[type=text]{
-                  width: 250px;
-                  height: 30px;
-                  background: transparent;
-                  border: 1px solid rgba(255,255,255,0.6);
-                  border-radius: 2px;
-                  color: #fff;
-                  font-family: "Exo", sans-serif;
-                  font-size: 16px;
-                  font-weight: 400;
-                  padding: 4px;
-          }
-
-          .login input[type=password]{
-                  width: 250px;
-                  height: 30px;
-                  background: transparent;
-                  border: 1px solid rgba(255,255,255,0.6);
-                  border-radius: 2px;
-                  color: #fff;
-                  font-family: "Exo", sans-serif;
-                  font-size: 16px;
-                  font-weight: 400;
-                  padding: 4px;
-                  margin-top: 10px;
-          }
-
-          .login input[type=button]{
-                  width: 260px;
-                  height: 35px;
-                  background: #fff;
-                  border: 1px solid #fff;
-                  cursor: pointer;
-                  border-radius: 2px;
-                  color: #a18d6c;
-                  font-family: "Exo", sans-serif;
-                  font-size: 16px;
-                  font-weight: 400;
-                  padding: 6px;
-                  margin-top: 10px;
-          }
-
-          .login input[type=button]:hover{
-                  opacity: 0.8;
-          }
-
-          .login input[type=button]:active{
-                  opacity: 0.6;
-          }
-
-          .login input[type=text]:focus{
-                  outline: none;
-                  border: 1px solid rgba(255,255,255,0.9);
-          }
-
-          .login input[type=password]:focus{
-                  outline: none;
-                  border: 1px solid rgba(255,255,255,0.9);
-          }
-
-          .login input[type=button]:focus{
-                  outline: none;
-          }
-
-          ::-webkit-input-placeholder{
-             color: rgba(255,255,255,0.6);
-          }
-
-          ::-moz-input-placeholder{
-             color: rgba(255,255,255,0.6);
-          }
-              </style>
 
 
 
@@ -638,8 +526,6 @@ class _Print //Интерфес облочного хранилища
                                           <table class="head"  width="100%" height="auto">
                                               <tr class="header">
                                                   <td align="center"  width="50%">
-                                                      <h1>Project6</h1>
-                                                      <h2>Thin client. Cloud storage.</h2>
                                                   </td>
                                                   <td align="right"  width="50%">
                                                       <ul>
@@ -655,13 +541,7 @@ class _Print //Интерфес облочного хранилища
                                   <tr>
                                       <td  align="center">
                                           <table  width="100%" >
-                                              <tr>
-                                                  <td align="center" width="auto">
-                                                      '.$this->Dir_Form_Creater($directory_contents, $is_owner)				
-                                                      .$this->File_Form_Creater($directory_contents, $is_owner)			
-                                                  .'</td>
-                                              </tr>
-                                              <tr>
+                                                <tr>
                                                   <td align="center">
                                                       <table >
                                                           <tr>
@@ -670,6 +550,12 @@ class _Print //Интерфес облочного хранилища
                                                           </tr>			
                                                       </table>
                                                   </td>
+                                              </tr>
+                                              <tr>
+                                                  <td align="center" width="auto">
+                                                      '.$this->Dir_Form_Creater($directory_contents, $is_owner)				
+                                                      .$this->File_Form_Creater($directory_contents, $is_owner)			
+                                                  .'</td>
                                               </tr>
                                           </table>
                                       </td>
@@ -711,15 +597,10 @@ class _Print //Интерфес облочного хранилища
   
   
       <style>
-      /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
-      @import url(https://fonts.googleapis.com/css?family=Exo:100,200,400);
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
-
 body{
 	margin: 0;
 	padding: 0;
-	background: #fff;
-
+	background: #000;
 	color: #fff;
 	font-family: Arial;
 	font-size: 12px;
@@ -733,79 +614,6 @@ body{
 	bottom: -40px;
 	width: auto;
 	height: auto;
-	background-image: url(http://ginva.com/wp-content/uploads/2012/07/city-skyline-wallpapers-008.jpg);
-	background-size: cover;
-	-webkit-filter: blur(5px);
-	z-index: 0;
-}
-
-.grad{
-	position: absolute;
-	top: -20px;
-	left: -20px;
-	right: -40px;
-	bottom: -40px;
-	width: auto;
-	height: auto;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
-	z-index: 1;
-	opacity: 0.7;
-}
-
-.header{
-	position: absolute;
-	top: calc(50% - 35px);
-	left: calc(50% - 255px);
-	z-index: 2;
-}
-
-.header div{
-	float: left;
-	color: #fff;
-	font-family: "Exo", sans-serif;
-	font-size: 35px;
-	font-weight: 200;
-}
-
-.header div span{
-	color: #5379fa !important;
-}
-
-.login{
-	position: absolute;
-	top: calc(50% - 75px);
-	left: calc(50% - 50px);
-	height: 150px;
-	width: 350px;
-	padding: 10px;
-	z-index: 2;
-}
-
-.login input[type=text]{
-	width: 250px;
-	height: 30px;
-	background: transparent;
-	border: 1px solid rgba(255,255,255,0.6);
-	border-radius: 2px;
-	color: #fff;
-	font-family: "Exo", sans-serif;
-	font-size: 16px;
-	font-weight: 400;
-	padding: 4px;
-}
-
-.login input[type=password]{
-	width: 250px;
-	height: 30px;
-	background: transparent;
-	border: 1px solid rgba(255,255,255,0.6);
-	border-radius: 2px;
-	color: #fff;
-	font-family: "Exo", sans-serif;
-	font-size: 16px;
-	font-weight: 400;
-	padding: 4px;
-	margin-top: 10px;
 }
 
 .login button{
@@ -815,7 +623,7 @@ body{
 	border: 1px solid #fff;
 	cursor: pointer;
 	border-radius: 2px;
-	color: #a18d6c;
+	color: #000;
 	font-family: "Exo", sans-serif;
 	font-size: 16px;
 	font-weight: 400;
@@ -853,39 +661,48 @@ body{
    color: rgba(255,255,255,0.6);
 }
     </style>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-
+    
 </head>
 
 <body>
-  <div class="body"></div>
-		<div class="grad"></div>
-		<div class="header">
-		</div>
-		<br>
-		<div class="login">
-				<form action="'.$this->__action.'" method="post">'
-                    .'<button type="submit" value="changeRights" name="do">Privat</button>'
-                    .'<input type="hidden"  name="access"  value="privat"/>'
-                    .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
-                    . '</form>'	
-                        	
-			.'<form action="'.$this->__action.'" method="post">'
-                        .'<div style=" height: 400px; overflow:auto;">'
-                        .$this->Users_Name_Select_List($_users_name_list)
-                        .'</div>'
-                        .'<button type="submit" value="changeRights" name="do">Select</button>'
-                        .'<input type="hidden"  name="access"  value="select"/>'
-                        .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
-                    .'</form>'
-			
-                         	
-                    .'<form action="'.$this->__action.'" method="post">'
-                    .'<button type="submit" value="changeRights" name="do">Public</button>'
-                    .'<input type="hidden"  name="access"  value="public"/>'
-                    .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
-                    . '</form>
+	<div class="login">
+             <table  width="100%" >
+                                              <tr>
+                                                  <td align="center" width="auto">
+                                                   	<form action="'.$this->__action.'" method="post">'
+                                                        .'<button type="submit" value="changeRights" name="do">Privat</button>'
+                                                        .'<input type="hidden"  name="access"  value="privat"/>'
+                                                        .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                                                        . '</form>'	
+
+                                                            .'<form action="'.$this->__action.'" method="post">'
+                                                            .'<div style=" height: 400px; overflow:auto;">'
+                                                            .$this->Users_Name_Select_List($_users_name_list)
+                                                            .'</div>'
+                                                            .'<button type="submit" value="changeRights" name="do">Select</button>'
+                                                            .'<input type="hidden"  name="access"  value="select"/>'
+                                                            .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                                                        .'</form>'
+
+
+                                                        .'<form action="'.$this->__action.'" method="post">'
+                                                        .'<button type="submit" value="changeRights" name="do">Public</button>'
+                                                        .'<input type="hidden"  name="access"  value="public"/>'
+                                                        .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                                                        . '</form>		
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td align="center">
+                                                      <table >
+                                                          <tr>
+
+                                                          </tr>			
+                                                      </table>
+                                                  </td>
+                                              </tr>
+                                          </table>
+		
 		</div>
 
 </body>
