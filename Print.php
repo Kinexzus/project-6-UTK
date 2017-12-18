@@ -109,8 +109,8 @@ class _Print //Интерфес облочного хранилища
                 $fuctional = "";
                 if($is_owner)
                 {
-                    $fuctional = '<td bgcolor="#38E54F"><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value['name'].'&do=download"> Скачать </a></td>'
-                .'<td bgcolor="#DA0791">'. '<a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
+                    $fuctional = '<td bgcolor="#38E54F"><a href = "'.$this->__action.'?file_path='.$upath.'//'.$value['name'].'&do=download"> Скачать </a></td>'
+                .'<td bgcolor="#DA0791">'. '<a href = "'.$this->__action.'?file_path='.$upath.'//'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'//'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
                 }
                 
                 $form.= '<tr align="center" bgcolor="#85C6FF"><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
@@ -121,10 +121,10 @@ class _Print //Интерфес облочного хранилища
                 $fuctional = "";
                 if($is_owner)
                 {
-                    $fuctional = '<td bgcolor="#808080"></td><td bgcolor="#DA0791"><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'/'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
+                    $fuctional = '<td bgcolor="#808080"></td><td bgcolor="#DA0791"><a href = "'.$this->__action.'?file_path='.$upath.'//'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'//'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
                 }
                 
-                 $form.= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$upath.'/'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></td>'.$fuctional.'</tr>';
+                 $form.= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$upath.'//'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></td>'.$fuctional.'</tr>';
             }
         }
          $form.='</table></div>';
@@ -300,22 +300,7 @@ class _Print //Интерфес облочного хранилища
        return $html;
     }
     
-    
-    //методРисованияСпискаПользователей($пользователь, $список_пользователей) чёт на въехал 
-    
-    public function Access_Error_Form($user, $fpath) // форма для ошибок прав доступа  +
-    {
-        $html = '<form method="POST" action="'.$this->__action.'">
-                        <p>Упользователя'.$user.' недостаточно прав на файл'.$fpath.'</p>
-                        <button name="do" value="access_error" type="submit">Try again</button>'
-                        .'<input type="hidden"  name="user"  value="'.$user.'"/>'
-                        .'<input type="hidden"  name="file"  value="'.$fpath.'"/>
-                        
-                    </form>';
-                    
-            return $html;
-    }
-	
+
 	private function GetStyleForm()
 	{
 		return 'body{
