@@ -377,7 +377,7 @@ class FileSystem
     {
         $fspath = $this->cl2fs($__clpath);
 
-        $file_path = $fspath . '/' . $__file_name;
+        $file_path = $fspath . '\\' . $__file_name;
         $i = 0;
         while(file_exists($file_path))
         {
@@ -387,7 +387,7 @@ class FileSystem
                 $name_parts[count($name_parts) - 2] .= "($i)";
             else
                 $name_parts[0] .= "($i)";
-            $file_path = $fspath . '/' . implode('.', $name_parts);
+            $file_path = $fspath . '\\' . implode('.', $name_parts);
         }
 
         if ($__tmp_name)
@@ -438,7 +438,7 @@ class FileSystem
         $remove = false;
         if(is_dir($fspath))
         {
-            $files_arr = glob($fspath."/*");
+            $files_arr = glob($fspath."\\*");
             foreach($files_arr as $file)
                 $remove &= $this->removeFile($this->fs2cl($file));
 
@@ -481,7 +481,7 @@ class FileSystem
     {
         $fspath = $this->cl2fs($__clpath);
 
-        $paths = glob("$fspath/*");
+        $paths = glob("$fspath\\*");
 
         $info = array();
         $info[0] = $__clpath;
@@ -531,11 +531,11 @@ function dirsize($fspath)
         while (false !== ($filename = readdir($dirstream))) {
             if ($filename!="." && $filename!="..")
             {
-                if (is_file($fspath."/".$filename))
-                    $totalsize+=filesize($fspath."/".$filename);
+                if (is_file($fspath."\\".$filename))
+                    $totalsize+=filesize($fspath."\\".$filename);
 
-                if (is_dir($fspath."/".$filename))
-                    $totalsize+=dirsize($fspath."/".$filename);
+                if (is_dir($fspath."\\".$filename))
+                    $totalsize+=dirsize($fspath."\\".$filename);
             }
         }
     }

@@ -65,13 +65,16 @@ class Cloud
      */
     function loginError($__login, $__errors)
     {
-        if (strpos($__login, ['@', '#', '$', '%', '^', '&', '*', '№',
-                                '!', '?', ';', '.', ',', ':', '~', '+', '-', '=',
-                                '"', '\'', '`', '<', '>', '[', ']', '{', '}', '(', ')', '|', '\\', '|', '/']))
-        {
-            $__errors[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
-            return;
-        }
+        $chars = ['@', '#', '$', '%', '^', '&', '*', '№',
+                    '!', '?', ';', '.', ',', ':', '~', '+', '-', '=',
+                    '"', '\'', '`', '<', '>', '[', ']', '{', '}', '(', ')', '|', '\\', '|', '/'];
+
+        foreach ($chars as $char)
+            if (strpos($__login, $char))
+            {
+                $__errors[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
+                return;
+            }
 
         if (strlen($__login) < MINCHARSLOGIN)
         {
@@ -96,13 +99,16 @@ class Cloud
      */
     function passwordError($__password, $__passwordcheck, $__errors)
     {
-        if(strpos($__password, ['@','#','$','%','^','&','*','№',
-                                '!','?',';','.',',',':','~','+','-','=',
-                                '"','\'','`','<','>','[',']','{','}','(',')','|','\\','|','/']))
-        {
-            $__errors[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
-            return;
-        }
+        $chars = ['@', '#', '$', '%', '^', '&', '*', '№',
+            '!', '?', ';', '.', ',', ':', '~', '+', '-', '=',
+            '"', '\'', '`', '<', '>', '[', ']', '{', '}', '(', ')', '|', '\\', '|', '/'];
+
+        foreach ($chars as $char)
+            if (strpos($__password, $char))
+            {
+                $__errors[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
+                return;
+            }
 
         if(strlen($__password) < MINCHARSPASS)
         {
@@ -174,14 +180,14 @@ class Cloud
         $this->authorizater->login($__login);
 
         //создаем директорию под пользователя
-        $this->fileSystem->addFile('/', $__login);
+        $this->fileSystem->addFile('\\', $__login);
         //устанавливаем на нее дефолтные права
-        $this->fileSystem->setRights("/$__login", $__login, []);
+        $this->fileSystem->setRights("\\$__login", $__login, []);
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList("/$__login");
+        $dirInfo = $this->fileSystem->getList("\\$__login");
 
         //рисуем страничку с содержимым директории пользователя
-        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "/$__login");
+        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login");
         return;
     }
 
@@ -206,7 +212,7 @@ class Cloud
         $dirInfo = $this->fileSystem->getList("/$__login");
 
         //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "/$__login");
+        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login");
         return;
     }
 
@@ -429,9 +435,9 @@ class Cloud
         $this->fileSystem->changeRights($__clpath, $__users);
 
 
-        $dirs = explode('/', $__clpath);
+        $dirs = explode('\\', $__clpath);
         array_pop($dirs);
-        $back_clpath = implode('/', $dirs);
+        $back_clpath = implode('\\', $dirs);
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($back_clpath);
