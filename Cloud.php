@@ -242,11 +242,6 @@ class Cloud
         }
 
         $rights = $this->fileSystem->getRight($__clpath, $user);
-        if ($rights[0] != 'r')
-        {
-            echo $this->printer->Access_Error_Form($user, $__clpath);
-            return;
-        }
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($__clpath, $user);
@@ -269,13 +264,6 @@ class Cloud
         if (!$user)
         {
             echo $this->printer->Log_Form_creater();
-            return;
-        }
-
-        $rights = $this->fileSystem->getRight($__clpath, $user);
-        if ($rights[1] != 'w')
-        {
-            echo $this->printer->Access_Error_Form($user, $__clpath);
             return;
         }
 
@@ -306,13 +294,6 @@ class Cloud
             return;
         }
 
-        $rights = $this->fileSystem->getRight($__clpath, $user);
-        if ($rights[1] != 'w')
-        {
-            echo $this->printer->Access_Error_Form($user, $__clpath);
-            return;
-        }
-
         $file_path = $this->fileSystem->addFile($__clpath, $__file_name, $__tmp_name);
         $this->fileSystem->setRights($file_path, $user, []);
 
@@ -338,13 +319,6 @@ class Cloud
             return;
         }
 
-        $rights = $this->fileSystem->getRight($__clpath, $user);
-        if ($rights[0] != 'r')
-        {
-            echo $this->printer->Access_Error_Form($user, $__clpath);
-            return;
-        }
-
         $this->fileSystem->giveFile($__clpath);
         return;
     }
@@ -363,20 +337,13 @@ class Cloud
             return;
         }
 
-        $rights = $this->fileSystem->getRight($__clpath, $user);
-        if ($rights[1] != 'w')
-        {
-            echo $this->printer->Access_Error_Form($user, $__clpath);
-            return;
-        }
-
         $this->fileSystem->removeFile($__clpath);
         $this->fileSystem->delFileRights($__clpath);
 
         //получаем информацию о содержимом папки пользователя
-        $dirs = explode('/', $__clpath);
+        $dirs = explode('\\', $__clpath);
         array_pop($dirs);
-        $clpath = implode('/', $dirs);
+        $clpath = implode('\\', $dirs);
         $dirInfo = $this->fileSystem->getList($clpath, $user);
 
         //рисуем страничку с содержимым папки пользователя
