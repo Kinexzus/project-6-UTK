@@ -2,7 +2,8 @@
 
 class Authorizater
 {
-    private $users_path;
+    private $users_path;    //путь до файла с информацией о пользователях
+
 
     function __construct($__users_path)
     {
@@ -10,6 +11,13 @@ class Authorizater
     }
 
 
+    /**
+     * Метод регистрирует пользователя (заносит информацию о нем в файл)
+     * @param string $__login
+     * @param string $__password
+     * @param string $__mail
+     * @return bool
+     */
     function register($__login, $__password, $__mail)
     {
         $file = fopen($this->users_path, 'a');
@@ -25,6 +33,11 @@ class Authorizater
         return false;
     }
 
+    /**
+     * Метод проверяет, занят ли логин
+     * @param $__login
+     * @return bool
+     */
     function loginExists($__login)
     {
         $file = fopen($this->users_path, 'r');
@@ -40,6 +53,12 @@ class Authorizater
         return false;
     }
 
+
+    /**
+     * Метод проверяет, занят ли адрес почты
+     * @param $__mail
+     * @return bool
+     */
     function mailExists($__mail)
     {
         $file = fopen($this->users_path, 'r');
@@ -55,6 +74,13 @@ class Authorizater
         return false;
     }
 
+
+    /**
+     * Метод проверяет наличие пользователя с данным логином и паролем
+     * @param $__login
+     * @param $__password
+     * @return bool
+     */
     function loginCheck($__login, $__password)
     {
         $file = fopen($this->users_path, 'r');
@@ -69,16 +95,30 @@ class Authorizater
         return false;
     }
 
+
+    /**
+     * Метод производит вход пользователя в систему
+     * @param $__login
+     */
     function login($__login)
     {
         setcookie('login', $__login);
     }
 
+
+    /**
+     * Метод производит выход текущего пользователя из системы
+     */
     function logout()
     {
         setcookie('login', '', time());
     }
 
+
+    /**
+     * Метод возвращает логин текущего пользователя
+     * @return bool
+     */
     function getLogin()
     {
         if(!isset($_COOKIE['login']))
@@ -87,6 +127,11 @@ class Authorizater
         return $_COOKIE['login'];
     }
 
+
+    /**
+     * Метод возвращает список всех пользователей, зарегестрированных в системе
+     * @return array
+     */
     function getUsers()
     {
         $users = [];

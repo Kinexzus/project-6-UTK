@@ -455,18 +455,18 @@ class FileSystem
      * @param string $__clpath - путь к файлу в файловой системе облака
      * @return array
      */
-    function getInfo($__clpath)
+    function getInfo($__clpath, $__user)
     {
         $fspath = $this->cl2fs($__clpath);
 
-        $info = [];                                             //данные о файле:
-        $info['name'] = basename($fspath);                      //имя файла
-        $info['type'] = filetype($fspath);                      //тип файла
-        $info['size'] = (is_dir($fspath))                       //размер файла
+        $info = [];                                                     //данные о файле:
+        $info['name'] = basename($fspath);                              //имя файла
+        $info['type'] = filetype($fspath);                              //тип файла
+        $info['size'] = (is_dir($fspath))                               //размер файла
             ? dirsize($fspath)
             : filesize($fspath);
-        $info['chdate'] = filemtime($fspath);                   //время последней модификации
-        $info['access_rights'] = $this->getRights($__clpath);   //права дотупа
+        $info['chdate'] = filemtime($fspath);                           //время последней модификации
+        $info['access_rights'] = $this->getRight($__clpath, $__user);   //права дотупа
 
         return $info;
     }
@@ -477,7 +477,7 @@ class FileSystem
      * @param string $__clpath - путь к директории в файловой системе облака
      * @return array
      */
-    function getList($__clpath)
+    function getList($__clpath, $__user)
     {
         $fspath = $this->cl2fs($__clpath);
 
@@ -486,7 +486,7 @@ class FileSystem
         $info = array();
         $info[0] = $__clpath;
         foreach ($paths as $path)
-            $info[] = $this->getInfo($this->fs2cl($path));
+            $info[] = $this->getInfo($this->fs2cl($path), $__user);
 
         return $info;
     }

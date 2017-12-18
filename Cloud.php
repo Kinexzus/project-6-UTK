@@ -1,7 +1,7 @@
 <?php
 require_once 'Authorizater.php';
 require_once 'FileSystem.php';
-require_once 'Print/Print.php';
+require_once 'Print.php';
 
 define('MINCHARSLOGIN', 4, true);
 define('MINCHARSPASS', 6, true);
@@ -31,7 +31,7 @@ class Cloud
             return;
         }
 
-        $dirInfo = $this->fileSystem->getList("/$user");
+        $dirInfo = $this->fileSystem->getList("/$user", $user);
 
         //рисуем страничку с содержимым директории пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "/$user");
@@ -50,7 +50,7 @@ class Cloud
             return;
         }
 
-        $dirInfo = $this->fileSystem->getList("/$user");
+        $dirInfo = $this->fileSystem->getList("/$user", $user);
 
         //рисуем страничку с содержимым директории пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "/$user");
@@ -184,7 +184,7 @@ class Cloud
         //устанавливаем на нее дефолтные права
         $this->fileSystem->setRights("\\$__login", $__login, []);
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList("\\$__login");
+        $dirInfo = $this->fileSystem->getList("\\$__login", $__login);
 
         //рисуем страничку с содержимым директории пользователя
         echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login");
@@ -209,7 +209,7 @@ class Cloud
         $this->authorizater->login($__login);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList("/$__login");
+        $dirInfo = $this->fileSystem->getList("/$__login", $__login);
 
         //рисуем страничку с содержимым папки пользователя
         echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login");
@@ -249,7 +249,7 @@ class Cloud
         }
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList($__clpath);
+        $dirInfo = $this->fileSystem->getList($__clpath, $user);
         $is_owner = ($rights[1] != 'w');
 
         //рисуем страничку с содержимым папки пользователя
@@ -283,7 +283,7 @@ class Cloud
         $this->fileSystem->setRights($file_path, $user, []);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList($__clpath);
+        $dirInfo = $this->fileSystem->getList($__clpath, $user);
 
         //рисуем страничку с содержимым папки пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath);
@@ -317,7 +317,7 @@ class Cloud
         $this->fileSystem->setRights($file_path, $user, []);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList($__clpath);
+        $dirInfo = $this->fileSystem->getList($__clpath, $user);
 
         //рисуем страничку с содержимым папки пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath);
@@ -377,7 +377,7 @@ class Cloud
         $dirs = explode('/', $__clpath);
         array_pop($dirs);
         $clpath = implode('/', $dirs);
-        $dirInfo = $this->fileSystem->getList($clpath);
+        $dirInfo = $this->fileSystem->getList($clpath, $user);
 
         //рисуем страничку с содержимым папки пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $clpath);
@@ -440,7 +440,7 @@ class Cloud
         $back_clpath = implode('\\', $dirs);
 
         //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList($back_clpath);
+        $dirInfo = $this->fileSystem->getList($back_clpath, $user);
 
         //рисуем страничку с содержимым папки пользователя
         echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $back_clpath);
