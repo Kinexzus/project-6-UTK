@@ -13,21 +13,32 @@ class FileSystem
         //Проверка и иницализация пути к файловой системе облака
         if (!(is_writable($__cloud_path) && is_readable($__cloud_path)))
             throw new Exception("Incorrect path to the file system: $__cloud_path");
-        $this->cloud_path = $__cloud_path;
-        ////////////////////////////////////
-        ////___ПРОВЕРКА НА ВСЕ ДЕРЕВО___////
-        ////////////////////////////////////
 
+        $cloud_path = str_replace('/', '\\', $__cloud_path);
+        $this->cloud_path = $cloud_path;
 
         //Проверка и иницализация пути к файлу прав доступа
         if (!(is_writable($__rights_path) && is_readable($__rights_path)))
             throw new Exception("Incorrect path to the access rights file : $__rights_path");
-        $this->rights_path = $__rights_path;
+
+        $rights_path = str_replace('/', '\\', $__rights_path);
+        $this->rights_path = $rights_path;
 
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //!!!!___СИНХРОНИЗАЦИЯ___!!!!!!
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
+
+
+    function getCloudPath()
+    {
+        return $this->cloud_path;
+    }
+
+    function getRightsPath()
+    {
+        return $this->rights_path;
     }
 
 
@@ -39,7 +50,7 @@ class FileSystem
      */
     function cl2fs($__clpath)
     {
-        $__clpath = str_replace('\\', '/', $__clpath);
+        $__clpath = str_replace('/', '\\', $__clpath);
         return $this->cloud_path . $__clpath;
     }
 
@@ -52,7 +63,7 @@ class FileSystem
      */
     function fs2cl($__fspath)
     {
-        $__fspath = str_replace('\\', '/', $__fspath);
+        $__fspath = str_replace('/', '\\', $__fspath);
         return str_replace($this->cloud_path, '', $__fspath);
     }
 
@@ -83,6 +94,7 @@ class FileSystem
                     fclose($file);
                     return 'r-';         //пользователь имеет право на чтение
                 }
+
 
                 $users = explode(',', $rights[2]);
                 foreach ($users as $user)
@@ -115,6 +127,20 @@ class FileSystem
             if(isset($rights_tmp[0]) && $rights_tmp[0] == $__clpath)
             {
                 $rights['owner'] = $rights_tmp[1];
+                if($rights_tmp[2] === '')
+                {
+                    $rights['readers'] = [];
+                    fclose($file);
+                    return $rights;
+                }
+
+                if($rights_tmp[2] === '@')
+                {
+                    $rights['readers'] = NULL;
+                    fclose($file);
+                    return $rights;
+                }
+
                 $rights['readers'] = explode(',', $rights_tmp[2]);
                 fclose($file);
                 return $rights;
@@ -139,13 +165,14 @@ class FileSystem
         $file = fopen($this->rights_path, 'a');
         if ($file)
         {
-            if($__users == NULL)
+            if($__users === NULL)
             {
                 $rights = "$__clpath::$__owner::@\n";
                 if (fputs($file, $rights))
                     if (fclose($file))
                         return true;
             }
+
             $readers = implode(',', $__users);
             $rights = "$__clpath::$__owner::$readers\n";
             if (fputs($file, $rights))
@@ -176,13 +203,14 @@ class FileSystem
 
                 if ($rights[0] == $__clpath)
                 {
-                    $new_readers = array();
-                    if($__users == NULL)
+                    if($__users === NULL)
                     {
                         $rights[2] = '@';
                         $text[$str_key] = implode('::', $rights);
                         break;
                     }
+
+                    $new_readers = array();
                     foreach ($__users as $user)
                         if($user != $rights[1])
                             $new_readers[] = $user;
@@ -193,11 +221,16 @@ class FileSystem
                 }
             }
 
+            $new_rights = '';
+            foreach ($text as $str)
+                $new_rights .= "$str\n";
+
             $fp = fopen($this->rights_path, 'w');
-            if ($fp)
-                if (fputs($fp, implode("\n", $text)))
-                    if (fclose($fp))
-                        return true;
+
+            fputs($fp, $new_rights);
+            fclose($fp);
+
+            return true;
         }
 
         return false;
@@ -258,66 +291,75 @@ class FileSystem
      */
     function delFileRights($__clpath)
     {
-        $text = file($this->rights_path);
-        if ($text) {
-            $new_text = '';
-
-            if(is_dir($this->cl2fs($__clpath)))
-                foreach ($text as $str)
-                    $new_text .= preg_replace("@".$__clpath."[^:]*::[^\n]*\n@", "", $str);
-
-            foreach ($text as $str)
-                $new_text .= preg_replace("@".$__clpath."::[^\n]*\n@", "", $str);
-
-            $fp = fopen($this->rights_path, 'w');
-            if ($fp)
-                if (fputs($fp, $new_text))
-                    if (fclose($fp))
-                        return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Метод лишает пользователя прав на все файлы.
-     * и удаляет все права на файлы, владельцем которых он является.
-     * @param string $__user - логин пользователя
-     * @return bool
-     */
-    function delUserRights($__user)
-    {
-        $text = file($this->rights_path);
-        if ($text) {
-            foreach ($text as $str_key => $str) {
+        $text = explode("\n", file_get_contents($this->rights_path));
+        array_pop($text);
+        if ($text)
+        {
+            foreach ($text as $str_key => $str)
+            {
                 $rights = explode('::', $str);
-                if ($rights[1] == $__user) {
+
+                if ($rights[0] == $__clpath)
+                {
                     unset($text[$str_key]);
-                    continue;
+                    break;
                 }
-
-                $readers = explode(',', $rights[2]);
-
-                foreach ($readers as $reader_key => $reader)
-                    if ($reader == $__user)
-                        unset($readers[$reader_key]);
-
-                $rights[2] = implode(',', $readers);
-
-                $text[$str_key] = implode('::', $rights);
             }
 
+            $new_rights = '';
+            foreach ($text as $str)
+                $new_rights .= "$str\n";
+
             $fp = fopen($this->rights_path, 'w');
-            if ($fp)
-                if (fputs($fp, $text))
-                    if (fclose($fp))
-                        return true;
+
+            fputs($fp, $new_rights);
+            fclose($fp);
 
             return true;
         }
 
         return false;
     }
+
+//    /**
+//     * Метод лишает пользователя прав на все файлы.
+//     * и удаляет все права на файлы, владельцем которых он является.
+//     * @param string $__user - логин пользователя
+//     * @return bool
+//     */
+//    function delUserRights($__user)
+//    {
+//        $text = file($this->rights_path);
+//        if ($text) {
+//            foreach ($text as $str_key => $str) {
+//                $rights = explode('::', $str);
+//                if ($rights[1] == $__user) {
+//                    unset($text[$str_key]);
+//                    continue;
+//                }
+//
+//                $readers = explode(',', $rights[2]);
+//
+//                foreach ($readers as $reader_key => $reader)
+//                    if ($reader == $__user)
+//                        unset($readers[$reader_key]);
+//
+//                $rights[2] = implode(',', $readers);
+//
+//                $text[$str_key] = implode('::', $rights);
+//            }
+//
+//            $fp = fopen($this->rights_path, 'w');
+//            if ($fp)
+//                if (fputs($fp, $text))
+//                    if (fclose($fp))
+//                        return true;
+//
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
     function fileExists($__clpath)
     {

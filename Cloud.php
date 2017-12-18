@@ -2,7 +2,7 @@
 <?php
 require_once 'Authorizater.php';
 require_once 'FileSystem.php';
-require_once 'Print.php';
+require_once 'Print/Print.php';
 
 define('MINCHARSLOGIN', 4, true);
 define('MINCHARSPASS', 6, true);

@@ -1,4 +1,5 @@
 <?php
+
 class Authorizater
 {
     private $users_path;
