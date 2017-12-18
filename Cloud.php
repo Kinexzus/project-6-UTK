@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 require_once 'Authorizater.php';
 require_once 'FileSystem.php';
@@ -20,23 +19,6 @@ class Cloud
         $this->printer = new _Print($__action);
     }
 
-    /*
-     * Возможные запросы:
-     * 1. Форма регистрации +
-     * 2. Форма авторизации +
-     * 3. Регистрация
-     * 4. Авторизация
-     * 5. Разлогирование(выход) +
-     * 6. Содержимое директории +
-     * 7. Создать директорию +
-     * 8. Загрузить файл +
-     * 9. Скачать файл +
-     * 10. Удалить файл/директорию +
-     * 11. Форма смены прав	+
-     * 12. Смена прав
-     * 13. Получение списка пользователей +
-     */
-
     /**
      * Метод рисует страницу с формой регистрации
      */
@@ -45,7 +27,7 @@ class Cloud
         $user = $this->authorizater->getLogin();
         if (!$user)
         {
-            echo $this->printer->Registration_form_creater();;
+            echo $this->printer->Registration_form_creater();
             return;
         }
 
@@ -75,44 +57,114 @@ class Cloud
         return;
     }
 
+
+    /**
+     * Метод проверяет формат логина и в случае ошибки заносит ее в массив ошибок
+     * @param string $__login - логин
+     * @param array $__errors - массив ошибок
+     */
+    function loginError($__login, $__errors)
+    {
+        if (strpos($__login, ['@', '#', '$', '%', '^', '&', '*', '№',
+                                '!', '?', ';', '.', ',', ':', '~', '+', '-', '=',
+                                '"', '\'', '`', '<', '>', '[', ']', '{', '}', '(', ')', '|', '\\', '|', '/']))
+        {
+            $__errors[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
+            return;
+        }
+
+        if (strlen($__login) < MINCHARSLOGIN)
+        {
+            $__errors[] = "Слишком короткий логин. Необходимо неменее " . MINCHARSLOGIN . " символов ";
+            return;
+        }
+
+        if ($this->authorizater->loginExists($__login))
+        {
+            $__errors[] = "Логин занят";
+            return;
+        }
+
+        return;
+    }
+
+    /**
+     * Метод проверяет формат пароля и в случае ошибки заносит ее в массив ошибок
+     * @param string $__password - пароль
+     * @param string $__passwordcheck - проверочный пароль
+     * @param array $__errors - массив ошибок
+     */
+    function passwordError($__password, $__passwordcheck, $__errors)
+    {
+        if(strpos($__password, ['@','#','$','%','^','&','*','№',
+                                '!','?',';','.',',',':','~','+','-','=',
+                                '"','\'','`','<','>','[',']','{','}','(',')','|','\\','|','/']))
+        {
+            $__errors[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
+            return;
+        }
+
+        if(strlen($__password) < MINCHARSPASS)
+        {
+            $__errors[] = "Слишком короткий пароль. Необходимо неменее ".MINCHARSLOGIN." символов ";
+            return;
+        }
+
+        if($__password != $__passwordcheck)
+        {
+            $__errors[] = "Неверный повтор ввода пароля";
+            return;
+        }
+
+        return;
+    }
+
+
+    /**
+     * Метод проверяет формат адреса электронной почты и в случае ошибки заносит ее в массив ошибок
+     * @param string $__mail - адрес электронной почты
+     * @param array $__errors - массив ошибок
+     */
+    function mailError($__mail, $__errors)
+    {
+        if(!preg_match('/(([a-z0-9\.\-]+)@([a-z0-9\.\-]+\.[a-z]+))/uis', $__mail))
+        {
+            $__errors[] = "Некорректный адрес электронной почты";
+            return;
+        }
+
+        if($this->authorizater->mailExists($__mail))
+        {
+            $__errors[] = "Данный адресс электронной почты занят";
+            return;
+        }
+
+        return;
+    }
+
+
     /**
      * Метод регистрирует пользователя
-     * @param $__login
-     * @param $__password
-     * @param $__mail
+     * @param string $__login - логин
+     * @param string $__password - пароль
+     * @param string $__passwordcheck - проверочный пароль
+     * @param string $__mail - адрес электронной почты
      * @return void
      */
     function register($__login, $__password, $__passwordcheck, $__mail)
     {
         $__mail = mb_strtolower($__mail);
 
-        $errors_arr = array();
+        //Проверка данных на ошибки
+        $errors = [];
+        $this->loginError($__login, $errors);
+        $this->passwordError($__password, $__passwordcheck, $errors);
+        $this->mailError($__mail, $errors);
 
-        //Проверка корректности логина
-//        if(preg_match('#[@\#$%^&*№!?;.,:~+-="\'`<>\[\]{}()|\\|/]#', $__login))
-//            $errors_arr[] = "Некорректный логин. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
-        if ($this->authorizater->loginExists($__login))
-              $errors_arr[] = "Логин занят";
-        if(strlen($__login) < MINCHARSLOGIN)
-            $errors_arr[] = "Слишком короткий логин. Необходимо неменее ".MINCHARSLOGIN." символов ";
-
-        //Проверка корректности пароля
-//        if(preg_match('#[@\#$%^&*№!?;.,:~+-="\'`<>[]{}()|\\|/]#', $__password))
-//            $errors_arr[] = "Некорректный парроль. Убедитесь, что он не содержит символы @#$%^&*№!?;.,:~+-=\"'`<>[]{}()|\\|/";
-        if(strlen($__password) < MINCHARSPASS)
-            $errors_arr[] = "Слишком короткий пароль. Необходимо неменее ".MINCHARSLOGIN." символов ";
-        if($__password != $__passwordcheck)
-            $errors_arr[] = "Неверный повтор ввода пароля";
-
-        //Проверка почтового адреса
-        if(!preg_match('/(([a-z0-9\.\-]+)@([a-z0-9\.\-]+\.[a-z]+))/uis', $__mail))
-            $errors_arr[] = "Некорректный адрес электронной почты";
-        elseif($this->authorizater->mailExists($__mail))
-            $errors_arr[] = "Почта занята";
-
-        if(count($errors_arr))
+        //Возврат к форме регистрации при наличии ошибок
+        if(count($errors))
         {
-            $errors_str = implode('\n', $errors_arr);
+            $errors_str = implode("\n", $errors);
             echo $this->printer->Registration_form_creater($errors_str, $__login, $__mail);
             return;
         }
@@ -135,8 +187,8 @@ class Cloud
 
     /**
      * Метод авторизует пользователя
-     * @param $__login
-     * @param $__password
+     * @param string $__login - логин
+     * @param string $__password - пароль
      * @return void
      */
     function login($__login, $__password)
@@ -154,7 +206,6 @@ class Cloud
         $dirInfo = $this->fileSystem->getList("/$__login");
 
         //рисуем страничку с содержимым папки пользователя
-
         echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "/$__login");
         return;
     }
@@ -171,6 +222,10 @@ class Cloud
     }
 
 
+    /**
+     * Метод переводит пользователя в заданную директорию
+     * @param string $__clpath - путь к директории
+     */
     function openDir($__clpath)
     {
         $user = $this->authorizater->getLogin();
@@ -197,6 +252,11 @@ class Cloud
     }
 
 
+    /**
+     * Метод создает новую директорию
+     * @param string $__clpath - директория, в которой будет создана новая
+     * @param string $__dir_name - имя директории
+     */
     function makeDir($__clpath, $__dir_name)
     {
         $user = $this->authorizater->getLogin();
@@ -213,8 +273,8 @@ class Cloud
             return;
         }
 
-        $this->fileSystem->addFile($__clpath, $__dir_name);
-        $this->fileSystem->setRights("$__clpath/$__dir_name", $user, []);
+        $file_path = $file_path = $this->fileSystem->addFile($__clpath, $__dir_name);
+        $this->fileSystem->setRights($file_path, $user, []);
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($__clpath);
@@ -225,6 +285,12 @@ class Cloud
     }
 
 
+    /**
+     * Метод загрузки файла на сервер
+     * @param string $__clpath - путь назночения
+     * @param string $__file_name - имя файла
+     * @param string $__tmp_name - фременное имя файла на сервере
+     */
     function uploadFile($__clpath, $__file_name, $__tmp_name)
     {
         $user = $this->authorizater->getLogin();
@@ -252,6 +318,11 @@ class Cloud
         return;
     }
 
+
+    /**
+     * Метод скачивания файла с сервера
+     * @param string $__clpath - путь к файлу
+     */
     function downloadFile($__clpath)
     {
         $user = $this->authorizater->getLogin();
@@ -272,6 +343,11 @@ class Cloud
         return;
     }
 
+
+    /**
+     * Метод удаления файла
+     * @param string $__clpath - путь к файлу
+     */
     function deleteFile($__clpath)
     {
         $user = $this->authorizater->getLogin();
@@ -302,6 +378,11 @@ class Cloud
         return;
     }
 
+
+    /**
+     * Метод перехода к меню изменения прав доступа к файлу
+     * @param string $__clpath - путь к файлу
+     */
     function printRightsMenu($__clpath)
     {
         $user = $this->authorizater->getLogin();
@@ -323,6 +404,12 @@ class Cloud
         echo $this->printer->Access_changer_form($__clpath, $users);
     }
 
+
+    /**
+     * Метод изменяет права на файл
+     * @param string $__clpath - путь к файлу
+     * @param array $__users - пользователи, которым разрешено право на чтение
+     */
     function changeRights($__clpath, $__users)
     {
         $user = $this->authorizater->getLogin();

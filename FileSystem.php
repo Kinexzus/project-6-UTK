@@ -398,7 +398,7 @@ class FileSystem
             if (mkdir($file_path))
                 return $this->fs2cl($file_path);
 
-        return false;
+        return $this->fs2cl($file_path);
     }
 
 
