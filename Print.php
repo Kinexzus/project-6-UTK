@@ -21,12 +21,10 @@ class _Print //Интерфес облочного хранилища
             $html = '
             <html lang="en" >
             <head>
+			 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+			  <link rel="stylesheet" type="text/css" href="log%reg.css">
 				<title>Cloud Storage</title>
-              <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-              <style>
-				'.$this->GetStyleForm().'
-			</style>
-
+             
             </head>
 
             <body>
@@ -67,12 +65,9 @@ class _Print //Интерфес облочного хранилища
             $html = '<!DOCTYPE html>
             <html lang="en" >
             <head>
-				
+			 <link rel="stylesheet" type="text/css" href="./log%reg.css">	
              <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
               <title>Cloud Storage</title>
-				<style>
-				'.$this->GetStyleForm().'
-			</style>
             </head>
 
             <body>
@@ -187,43 +182,6 @@ class _Print //Интерфес облочного хранилища
 		 <link href="FSI.css" rel="stylesheet">
          <title>Cloud Storage</title>
 		<style>
-		
-		body{
-			margin: 0;
-			padding: 0;
-			background: #000;
-			color: #fff;
-			font-family: Arial;
-			font-size: 12px;
-			}
-		a {
-			text-decoration: none;
-		  } 
-			 [type=submit]{
-             width: 250px;
-             height: 30px;
-             background: transparent;
-             border: 1px solid rgba(255,255,255,0.6);
-             border-radius: 2px;
-             color: #fff;
-             font-family: ."Exo"., sans-serif;
-             font-size: 16px;
-             font-weight: 400;
-             padding: 4px;
-            }
-			 [type=text]{
-             width: 250px;
-             height: 30px;
-             background: transparent;
-             border: 1px solid rgba(255,255,255,0.6);
-             border-radius: 2px;
-             color: #fff;
-             font-family: ."Exo"., sans-serif;
-             font-size: 16px;
-             font-weight: 400;
-             padding: 4px;
-            }
-
 		</style>
 		</head>
             <body bgcolor="#808080" link="black" vlink="black" alink="black" bgcolor="black" text-color="white">
@@ -277,69 +235,7 @@ class _Print //Интерфес облочного хранилища
   <title>Access list</title>
   <style>
 		
-body{
-	margin: 0;
-	padding: 0;
-	background: #000;
-	color: #fff;
-	font-family: Arial;
-	font-size: 12px;
-}
 
-.body{
-	position: absolute;
-	top: -20px;
-	left: -20px;
-	right: -40px;
-	bottom: -40px;
-	width: auto;
-	height: auto;
-}
-
-.login button{
-	width: 260px;
-	height: 35px;
-	background: #fff;
-	border: 1px solid #fff;
-	cursor: pointer;
-	border-radius: 2px;
-	color: #000;
-	font-family: "Exo", sans-serif;
-	font-size: 16px;
-	font-weight: 400;
-	padding: 6px;
-	margin-top: 10px;
-}
-
-.login input[type=button]:hover{
-	opacity: 0.8;
-}
-
-.login input[type=button]:active{
-	opacity: 0.6;
-}
-
-.login input[type=text]:focus{
-	outline: none;
-	border: 1px solid rgba(255,255,255,0.9);
-}
-
-.login input[type=password]:focus{
-	outline: none;
-	border: 1px solid rgba(255,255,255,0.9);
-}
-
-.login input[type=button]:focus{
-	outline: none;
-}
-
-::-webkit-input-placeholder{
-   color: rgba(255,255,255,0.6);
-}
-
-::-moz-input-placeholder{
-   color: rgba(255,255,255,0.6);
-}
 	</style>
 
 </head>
