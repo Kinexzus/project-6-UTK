@@ -1,23 +1,25 @@
 <?php
 
-class _Print //Интерфес облочного хранилища
+class _Print //Класс содержащий методы реализации графического представления облочного хранилища
 {   
-    private $__action;
+    private $__action; //Поле содержащие имя сервера обработки запросов
 
-
-    public function __construct($action)
+	//$action -  имя сервера обработки запросов
+    public function __construct($action) //Конструктор класса
     {
         $this->__action = $action;
     }
     
-    function Registration_form_creater($error = NULL, $login = "", $mail = "") //    форма регистрации +
+	//$error - ошибка возникающая при регистрации, $login - восстанавливает значение логина в форме при ошибке, если ошибка допущена не в поле логина; , $mail - восстанавливает значение почты в форме при ошибке, если ошибка допущена не в поле почты;
+    public function Registration_form_creater($error = NULL, $login = "", $mail = "") //Функция отображающая форму регистрации новых пользователей
     {
             $error_out = '';
             if($error !== NULL)
             {
-                $error_out = '<input type="text" value="'.$error.'" name="login">';
+                $error_out = '<input type="text" value="'.$error.'" name="login">'; // если приходит ошибка, то отрисовывает лополнительное поле с ошибкой
             }
-        
+			
+			//Код html-страницы авторизации
             $html = '
             <html lang="en" >
             <head>
@@ -53,15 +55,17 @@ class _Print //Интерфес облочного хранилища
                 
            return $html;
     }
-            
-    function Log_Form_creater($error = NULL, $login = "") // форма для авторизации  +
+     
+	//$error - ошибка возникающая при логировании, $login - восстанавливает значение логина в форме при ошибке, если ошибка допущена не в поле логина;	 
+	public function Log_Form_creater($error = NULL, $login = "") //Функция отображающая форму логирования новых пользователей
     {       
             $error_out = '';
             if($error !== NULL)
             {
-                $error_out = '<input type="text" value="'.$error.'" name="login">';
+                $error_out = '<input type="text" value="'.$error.'" name="login">'; 	// если приходит ошибка, то отрисовывает лополнительное поле с ошибкой
             }
         
+			//Код html-страницы логирования
             $html = '<!DOCTYPE html>
             <html lang="en" >
             <head>
@@ -93,35 +97,62 @@ class _Print //Интерфес облочного хранилища
             
             return $html;    
      }
-            
-    public function File_Form_Creater($directory_contents,$is_owner) // форма дял отображения списка файлов  +
+    //$path - путь до директории 
+	private function  Directory_tree($path) // Функция возвращающая иерархию представления вложенности директорий
+	{
+		$dir_arr = explode("\\", $path);	//	Раскладываем полученный путь в массив 
+		$path_S = [];
+
+
+		while(count($dir_arr) > 1) // Создаём массив с путями до котологов
+		{
+			array_pop($dir_arr);
+			$path_S[] = implode("\\", $dir_arr);
+		}
+
+
+		$dir = explode("\\", $path); //	Раскладываем полученный путь в массив 
+		array_pop($dir);
+		$path_S = array_reverse($path_S);
+		$res = "";
+		for($i = 0; $i != count($path_S); $i++) //	Создаём иерархию представления вложенности директорий с сылками к каждой ступени вложенности
+		{
+			$res .= '<a href = "'.$this->__action.'?path='.$path_S[$i].'&do=openDir">'. '\\'.$dir[$i] .'</a>';
+		}
+		
+		return $res;
+	}
+	
+	//$directory_contents - массив содержимого дериктории ,$is_owner - параметр определяющий является ли пользователь владельцем
+    private function File_Form_Creater($directory_contents,$is_owner) // Функция возвращающая список контента директории
     {
         $file_arr = $directory_contents;
         $upath = $file_arr[0];
-        unset($file_arr[0]);
+        unset($file_arr[0]); // Отделяем путь до директории 
     
-        $form = '<div style=" height: 800px; overflow:auto;"><table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">';
+        $form = '<div style=" height: 800px; overflow:auto;"><table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">'; //Создаем таблицу для записи файлов дериктории
         foreach ($file_arr as $value) 
         {
-			
-            if($value["type"] == 'file' && isset($value["type"]))
+				
+			// Определяем что это дериктории или файла
+            if($value["type"] == 'file' && isset($value["type"]))   //Если файл то добавляем скачивание 
             {   
                 $fuctional = "";
-                if($is_owner)
+                if($is_owner)	//Проверка владельца
                 {
-                    $fuctional = '<td bgcolor="#38E54F"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value['name'].'&do=download"> Скачать </a></td>'
+                    $fuctional = '<td bgcolor="#38E54F"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value['name'].'&do=download"> Скачать </a></td>' //добавление возможностей: скачивание, удаление, смена прав
                 .'<td bgcolor="#DA0791">'. '<a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
                 }
                 
                 $form.= '<tr align="center" bgcolor="#85C6FF"><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
             }
 			
-			if($value["type"] == 'dir' && isset($value["type"]))
+			if($value["type"] == 'dir' && isset($value["type"])) //Если директория то делаем ссылка внуть директории
             {
                 $fuctional = "";
-                if($is_owner)
+                if($is_owner)	//Проверка владельца
                 {
-                    $fuctional = '<td bgcolor="#808080"></td><td bgcolor="#DA0791"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
+                    $fuctional = '<td bgcolor="#808080"></td><td bgcolor="#DA0791"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>'; //добавление возможностей:удаление, смена прав
                 }
                 
                  $form.= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$upath.'\\'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></td>'.$fuctional.'</tr>';
@@ -130,8 +161,9 @@ class _Print //Интерфес облочного хранилища
          $form.='</table></div>';
          return $form;
     }
-            
-    public function Logout($user)     // +
+    
+	//$user - имя пользователя
+    private function Logout($user)   // Функция отрисовывает форму выхода из системы пользователя
     {
         $html = '<form method="POST" action="'.$this->__action.'">
                         <p>'.$user.'</p>
@@ -141,8 +173,9 @@ class _Print //Интерфес облочного хранилища
         return $html;
     }
 
-
-    public function Upload_File_Form($path) // форма для подгруззки файла  +
+	
+	// $path - путь до директории куда будем подгружать файл
+    private function Upload_File_Form($path) // Функция отображающая форму для подгрузки файлов на сервер
     {
         $form = '<form action="'.$this->__action.'"  method=post enctype=multipart/form-data class="file-upload">
                     <input type="file"  name="file_name"/>
@@ -152,8 +185,9 @@ class _Print //Интерфес облочного хранилища
     
         return $form;
     }
-            
-    public function Create_Dir_Form($path) // Создание формы новой дириктории  +
+    
+	// $path - путь до директории где будем создавать директорию
+    private function Create_Dir_Form($path) // Функция отображающая форму для создания директории на сервере
     {
         $form = '<form action="'.$this->__action.'"  method="post">'
                 .'<input type="hidden"  name="path"  value="'.$path.'"/>'
@@ -163,18 +197,19 @@ class _Print //Интерфес облочного хранилища
     
         return $form;
     }
-            
-    function File_System_Interface_creater($user, $directory_contents,$is_owner, $path) //Отрисовка дириктории   +
+    
+	//$user - имя пользователя , $directory_contents - массив содержимого дериктории,$is_owner - параметр определяющий является ли пользователь владельцем , $path - путь до директории, $_users_name_list - список имён пользователей
+    public function File_System_Interface_creater($user, $directory_contents,$is_owner, $path, $_users_name_list) //Функция отображающая графическое представление файлов системы
     {
         $Create_Dir = "";
         $Upload_File = "";
         
-        if($is_owner === TRUE)
+        if($is_owner === TRUE) // если владелец, то добавляем создание директории и подгрузку файлов 
         {
-            $Create_Dir = $this->Create_Dir_Form($path);
+            $Create_Dir = $this->Create_Dir_Form($path);		
             $Upload_File = $this->Upload_File_Form($path);
         }
-        
+        //Код html-страницы
         $html = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
         <html lang="en" >
         <head>
@@ -188,10 +223,18 @@ class _Print //Интерфес облочного хранилища
                 <table  width="100%" height="auto" border="2">
                     <tr>
                          <td align="center"  width="100%" color="white">
-                            '.$this->Logout($user).'
+                            '.$this->Logout($user).' 
                         </td>
                      <tr>
 				</table>
+				<table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">
+					<tr>
+						<td>'
+							.Directory_tree(path).
+						'</td>
+					</tr>
+				</table>'
+				.$this->Users_List($_users_name_list).'
                 <table width="100%" height="auto" border="2">
 					<tr>
 						<td align="center">'
@@ -209,40 +252,42 @@ class _Print //Интерфес облочного хранилища
         return $html;
                 
     }
-            
-    public function Users_Name_Select_List($_users_name_list) // список пользователей ввиде  +
+	
+    //  $_users_name_list - массив пользователей обачного хранилища 
+    private function Users_Name_Select_List($_users_name_list) // Функция возвращает область выбора пользователь в виде checkbox для интерфейса смены прав на файлы
     {
-        $i = 1;
+        $i = 1; //Индексация параметра name для checkbox
         $users_name_list = $_users_name_list;
-        //здесь должен быть получен массив имён пользователей
         $users_name_select_list_select = '';
 
-        foreach ($users_name_list as $value) 
+        foreach ($users_name_list as $value) //создаём список пользователей
         {
             $users_name_select_list_select.= '<p><input type="checkbox" name="Param'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
             ++$i;
         }
             return $users_name_select_list_select;
         }
-                    
-    function Access_changer_form($file, $_users_name_list)   // ССмена прав доступа. Может быть в последствии изменён +
+    
+	//$file - файл у которого меняются права , $_users_name_list - массив пользователей обачного хранилища 
+	public function Access_changer_form($file, $_users_name_list)   // Функция отображающая интерфейс смены прав у выбранного файла или директории
     {
+		//Код html-страницы
         $form ='<!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <link href="Access.css" rel="stylesheet">
-  <title>Access list</title>
-  <style>
-		
+		<html lang="en" >
+		<head>
+		  <meta charset="UTF-8">
+		  <link href="Access.css" rel="stylesheet">
+		  <title>Access list</title>
+		  <style>
+				
 
-	</style>
+		</style>
 
-</head>
+		</head>
 
-<body>
-	<div class="login">
-             <table  width="100%" >
+		<body>
+										<div class="login">
+											<table  width="100%" >
                                               <tr>
                                                   <td align="center" width="auto">
                                                    	<form action="'.$this->__action.'" method="post">'
@@ -278,8 +323,7 @@ class _Print //Интерфес облочного хранилища
                                                   </td>
                                               </tr>
                                           </table>
-		
-							</div>
+										</div>
 
 						</body>
 					</html>';
@@ -287,21 +331,22 @@ class _Print //Интерфес облочного хранилища
         return $form;
     } 
     
-    public function Users_List($_users_name_list) // хз какой список нужен будет пока только имена, если что исправлю. +
+	//$_users_name_list - массив пользователей обачного хранилища 
+    private function Users_List($_users_name_list) // Функция создаёт таблицу пользователь для перехода по каталогам других пользователей хранилища
     {
-        $html = '<table>';
+        $html = '<div style=" height: 800px; overflow:auto;"><table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">';
         foreach ($_users_name_list as $value) 
         {
-            $html .= '<tr><td><p>'.$value.'</p></td></tr>';
+            $html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$value.'&do=openDir">'. $value .'</a></td>'.$fuctional.'</tr>';
         }
         
-       $html .= '</table>';
+       $html .= '</div></table>';
        
        return $html;
     }
     
-
-	private function GetStyleForm()
+	
+	private function GetStyleForm() // Резервная функция котора возвращает стили для формы логировании и регистрации
 	{
 		return 'body{
                     margin: 0;
@@ -436,6 +481,113 @@ class _Print //Интерфес облочного хранилища
             ::-moz-input-placeholder{
                color: rgba(255,255,255,0.6);
             }';
+	}
+	
+	private function GetStyleAccessForm() // Резервная функция котора возвращает стили для формы изменения прав доступа
+	{
+			body{
+				margin: 0;
+			padding: 0;
+			background: #000;
+			color: #fff;
+			font-family: Arial;
+			font-size: 12px;
+		}
+
+		.body{
+			position: absolute;
+			top: -20px;
+			left: -20px;
+			right: -40px;
+			bottom: -40px;
+			width: auto;
+			height: auto;
+		}
+
+		.login button{
+			width: 260px;
+			height: 35px;
+			background: #fff;
+			border: 1px solid #fff;
+			cursor: pointer;
+			border-radius: 2px;
+			color: #000;
+			font-family: "Exo", sans-serif;
+			font-size: 16px;
+			font-weight: 400;
+			padding: 6px;
+			margin-top: 10px;
+		}
+
+		.login input[type=button]:hover{
+			opacity: 0.8;
+		}
+
+		.login input[type=button]:active{
+			opacity: 0.6;
+		}
+
+		.login input[type=text]:focus{
+			outline: none;
+			border: 1px solid rgba(255,255,255,0.9);
+		}
+
+		.login input[type=password]:focus{
+			outline: none;
+			border: 1px solid rgba(255,255,255,0.9);
+		}
+
+		.login input[type=button]:focus{
+			outline: none;
+		}
+
+		::-webkit-input-placeholder{
+		   color: rgba(255,255,255,0.6);
+		}
+
+		::-moz-input-placeholder{
+		   color: rgba(255,255,255,0.6);
+		}
+	}
+	
+	private function GetStyleFSI()  // Резервная функция котора возвращает стили для графического представления файловой системы
+	{
+		body{
+			margin: 0;
+			padding: 0;
+			background: #000;
+			color: #fff;
+			font-family: Arial;
+			font-size: 12px;
+			}
+		a {
+			text-decoration: none;
+		  } 
+			 [type=submit]{
+             width: 250px;
+             height: 30px;
+             background: transparent;
+             border: 1px solid rgba(255,255,255,0.6);
+             border-radius: 2px;
+             color: #fff;
+             font-family: ."Exo"., sans-serif;
+             font-size: 16px;
+             font-weight: 400;
+             padding: 4px;
+            }
+			 [type=text]{
+             width: 250px;
+             height: 30px;
+             background: transparent;
+             border: 1px solid rgba(255,255,255,0.6);
+             border-radius: 2px;
+             color: #fff;
+             font-family: ."Exo"., sans-serif;
+             font-size: 16px;
+             font-weight: 400;
+             padding: 4px;
+            }
+
 	}
 }
 ?>
