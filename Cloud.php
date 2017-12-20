@@ -31,10 +31,11 @@ class Cloud
             return;
         }
 
-        $dirInfo = $this->fileSystem->getList("/$user", $user);
+        $dirInfo = $this->fileSystem->getList("\\$user", $user);
 
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым директории пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "/$user");
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "\\$user", $users_list);
         return;
     }
 
@@ -50,10 +51,10 @@ class Cloud
             return;
         }
 
-        $dirInfo = $this->fileSystem->getList("/$user", $user);
-
+        $dirInfo = $this->fileSystem->getList("\\$user", $user);
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым директории пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "/$user");
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "\\$user", $users_list);
         return;
     }
 
@@ -65,6 +66,12 @@ class Cloud
      */
     function loginError($__login, $__errors)
     {
+        if (!strlen($__login))
+        {
+            $__errors[] = "Слишком короткий логин. Необходимо неменее " . MINCHARSLOGIN . " символов ";
+            return;
+        }
+
         $chars = ['@', '#', '$', '%', '^', '&', '*', '№',
                     '!', '?', ';', '.', ',', ':', '~', '+', '-', '=',
                     '"', '\'', '`', '<', '>', '[', ']', '{', '}', '(', ')', '|', '\\', '|', '/'];
@@ -185,9 +192,9 @@ class Cloud
         $this->fileSystem->setRights("\\$__login", $__login, []);
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList("\\$__login", $__login);
-
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым директории пользователя
-        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login");
+        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login", $users_list);
         return;
     }
 
@@ -210,9 +217,9 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList("/$__login", $__login);
-
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login");
+        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login", $users_list);
         return;
     }
 
@@ -245,10 +252,10 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($__clpath, $user);
-        $is_owner = ($rights[1] != 'w');
-
+        $is_owner = ($rights[1] == 'w');
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, $is_owner, $__clpath);
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, $is_owner, $__clpath, $users_list);
         return;
     }
 
@@ -272,9 +279,9 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($__clpath, $user);
-
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath);
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath, $users_list);
         return;
     }
 
@@ -299,9 +306,9 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($__clpath, $user);
-
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath);
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath, $users_list);
         return;
     }
 
@@ -345,9 +352,9 @@ class Cloud
         array_pop($dirs);
         $clpath = implode('\\', $dirs);
         $dirInfo = $this->fileSystem->getList($clpath, $user);
-
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $clpath);
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $clpath, $users_list);
         return;
     }
 
@@ -362,13 +369,6 @@ class Cloud
         if (!$user)
         {
             echo $this->printer->Log_Form_creater();
-            return;
-        }
-
-        $rights = $this->fileSystem->getRight($__clpath, $user);
-        if ($rights[1] != 'w')
-        {
-            echo $this->printer->Access_Error_Form($user, $__clpath);
             return;
         }
 
@@ -392,13 +392,6 @@ class Cloud
             return;
         }
 
-        $rights = $this->fileSystem->getRight($__clpath, $user);
-        if ($rights[1] != 'w')
-        {
-            echo $this->printer->Access_Error_Form($user, $__clpath);
-            return;
-        }
-
         $this->fileSystem->changeRights($__clpath, $__users);
 
 
@@ -408,9 +401,9 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($back_clpath, $user);
-
+        $users_list = $this->authorizater->getUsers();
         //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $back_clpath);
+        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $back_clpath, $users_list);
         return;
     }
 }

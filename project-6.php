@@ -29,6 +29,7 @@ switch ($_REQUEST['do']){
     case 'login':{
         $login = $_REQUEST['login'];
         $password = $_REQUEST['password'];
+        //var_dump($_REQUEST);
         $cloud->login($login, $password);
         exit;
     }
@@ -56,7 +57,6 @@ switch ($_REQUEST['do']){
     case 'makeDir':{
         $dir_name = $_REQUEST['dir_name'];
         $clpath = $clpath = $_REQUEST['path'];
-
         $cloud->makeDir($clpath, $dir_name);
         exit;
     }

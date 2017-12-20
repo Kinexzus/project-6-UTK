@@ -101,20 +101,24 @@ class _Print //Класс содержащий методы реализации
 	private function  Directory_tree($path) // Функция возвращающая иерархию представления вложенности директорий
 	{
 		$dir_arr = explode("\\", $path);	//	Раскладываем полученный путь в массив 
+        array_shift($dir_arr);
 		$path_S = [];
 
 
-		while(count($dir_arr) > 1) // Создаём массив с путями до котологов
+		while(count($dir_arr) > 0) // Создаём массив с путями до котологов
 		{
-			array_pop($dir_arr);
-			$path_S[] = implode("\\", $dir_arr);
+			$path_S[] = "\\".implode("\\", $dir_arr);
+            array_pop($dir_arr);
 		}
 
 
-		$dir = explode("\\", $path); //	Раскладываем полученный путь в массив 
-		array_pop($dir);
+		$dir = explode("\\", $path); //	Раскладываем полученный путь в массив
+        array_shift($dir);
 		$path_S = array_reverse($path_S);
 		$res = "";
+		/*var_dump($path_S);
+        var_dump($dir);*/
+
 		for($i = 0; $i != count($path_S); $i++) //	Создаём иерархию представления вложенности директорий с сылками к каждой ступени вложенности
 		{
 			$res .= '<a href = "'.$this->__action.'?path='.$path_S[$i].'&do=openDir">'. '\\'.$dir[$i] .'</a>';
@@ -230,7 +234,7 @@ class _Print //Класс содержащий методы реализации
 				<table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">
 					<tr>
 						<td>'
-							.Directory_tree(path).
+							.$this->Directory_tree($path).
 						'</td>
 					</tr>
 				</table>'
@@ -337,7 +341,7 @@ class _Print //Класс содержащий методы реализации
         $html = '<div style=" height: 800px; overflow:auto;"><table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">';
         foreach ($_users_name_list as $value) 
         {
-            $html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$value.'&do=openDir">'. $value .'</a></td>'.$fuctional.'</tr>';
+            $html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td></tr>';
         }
         
        $html .= '</div></table>';
@@ -485,7 +489,7 @@ class _Print //Класс содержащий методы реализации
 	
 	private function GetStyleAccessForm() // Резервная функция котора возвращает стили для формы изменения прав доступа
 	{
-			body{
+	    return '	body{
 				margin: 0;
 			padding: 0;
 			background: #000;
@@ -547,12 +551,12 @@ class _Print //Класс содержащий методы реализации
 
 		::-moz-input-placeholder{
 		   color: rgba(255,255,255,0.6);
-		}
+		}';
 	}
 	
 	private function GetStyleFSI()  // Резервная функция котора возвращает стили для графического представления файловой системы
 	{
-		body{
+		return 'body{
 			margin: 0;
 			padding: 0;
 			background: #000;
@@ -586,8 +590,7 @@ class _Print //Класс содержащий методы реализации
              font-size: 16px;
              font-weight: 400;
              padding: 4px;
-            }
-
+            }';
 	}
 }
 ?>

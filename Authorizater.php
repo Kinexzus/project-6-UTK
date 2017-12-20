@@ -142,7 +142,7 @@ class Authorizater
             if(!$str)
                 continue;
             $data = explode('::', $str);
-            if(isset($data[0]) && $data[0] != $user)
+            if(isset($data[0]))
                 $users[] = $data[0];
         }
 
