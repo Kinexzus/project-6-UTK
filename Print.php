@@ -301,80 +301,127 @@ class _Print //Класс содержащий методы реализации
                 
     }
 	
-    //  $_users_name_list - массив пользователей обачного хранилища 
-    private function Users_Name_Select_List($_users_name_list) // Функция возвращает область выбора пользователь в виде checkbox для интерфейса смены прав на файлы
+    //  $_users_name_list - массив пользователей обачного хранилища, $file - изменяемый файл
+    private function Users_Name_Select_List($_users_name_list, $file) // Функция возвращает область выбора пользователь в виде checkbox для интерфейса смены прав на файлы
     {
         $i = 1; //Индексация параметра name для checkbox
         $users_name_list = $_users_name_list;
-        $users_name_select_list_select = '';
+        $users_name_select_list_selectr = '';
+	$users_name_select_list_select_w = '';
+	 $users_name_select_list_select_rw = '';
+	 $users_name_select_list_select__ = '';
+	   
+	$form = '<table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto"><tr><td>Чтение</td><td>Запись</td><td>Чтение/Запись</td><td>-/-</td></tr>';
 
         foreach ($users_name_list as $value) //создаём список пользователей
         {
-            $users_name_select_list_select.= '<p><input type="checkbox" name="Param'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
+            $users_name_select_list_selectr.= '<p><input type="checkbox" name="r-'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
             ++$i;
         }
-            return $users_name_select_list_select;
+	
+	foreach ($users_name_list as $value) //создаём список пользователей
+        {
+            $users_name_select_list_select_w.= '<p><input type="checkbox" name="-w'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
+            ++$i;
         }
+	
+	foreach ($users_name_list as $value) //создаём список пользователей
+        {
+            $users_name_select_list_select_rw.= '<p><input type="checkbox" name="rw'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
+            ++$i;
+        }
+	
+	foreach ($users_name_list as $value) //создаём список пользователей
+        {
+            $users_name_select_list_select__.= '<p><input type="checkbox" name="--'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
+            ++$i;
+        }
+	
+		$form .= '<tr>
+		<td>
+		<form action="'.$this->__action.'" method="post">'
+                .'<div style=" height: 400px; overflow:auto;">'
+                  .$users_name_select_list_selectr
+                 .'</div>'
+                 .'<button type="submit" value="changeRights" name="do">Select</button>'
+                 .'<input type="hidden"  name="access"  value="select"/>'
+                 .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                 .'</form>
+		 </td>
+		 <td>
+		 <form action="'.$this->__action.'" method="post">'
+                .'<div style=" height: 400px; overflow:auto;">'
+                 .$users_name_select_list_select_w
+                 .'</div>'
+                 .'<button type="submit" value="changeRights" name="do">Select</button>'
+                 .'<input type="hidden"  name="access"  value="select"/>'
+                 .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                 .'</form>
+		 </td>
+		 <td>
+		 <form action="'.$this->__action.'" method="post">'
+                .'<div style=" height: 400px; overflow:auto;">'
+                 .$users_name_select_list_select_rw
+                 .'</div>'
+                 .'<button type="submit" value="changeRights" name="do">Select</button>'
+                 .'<input type="hidden"  name="access"  value="select"/>'
+                 .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                 .'</form>
+		 </td>
+		 <td>
+		 <form action="'.$this->__action.'" method="post">'
+                .'<div style=" height: 400px; overflow:auto;">'
+                 .$users_name_select_list_select__
+                 .'</div>'
+                 .'<button type="submit" value="changeRights" name="do">Select</button>'
+                 .'<input type="hidden"  name="access"  value="select"/>'
+                 .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                 .'</form>
+		 </td>
+		 </tr>
+		 </table>';
+	    
+	return $form;
+    }
     
 	//$file - файл у которого меняются права , $_users_name_list - массив пользователей обачного хранилища 
 	public function Access_changer_form($file, $_users_name_list)   // Функция отображающая интерфейс смены прав у выбранного файла или директории
     {
 		//Код html-страницы
-        $form ='<!DOCTYPE html>
-		<html lang="en" >
-		<head>
+        $form =' <!DOCTYPE html>
+		 <html lang="en" >
+		 <head>
 		  <meta charset="UTF-8">
 		  <link href="Access.css" rel="stylesheet">
 		  <title>Access list</title>
 		  <style>
-				
-
-		</style>
-
-		</head>
+		  </style>
+		 </head>
 
 		<body>
-										<div class="login">
-											<table  width="100%" >
-                                              <tr>
-                                                  <td align="center" width="auto">
-                                                   	<form action="'.$this->__action.'" method="post">'
-                                                        .'<button type="submit" value="changeRights" name="do">Privat</button>'
-                                                        .'<input type="hidden"  name="access"  value="privat"/>'
-                                                        .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
-                                                        . '</form>'	
-
-                                                            .'<form action="'.$this->__action.'" method="post">'
-                                                            .'<div style=" height: 400px; overflow:auto;">'
-                                                            .$this->Users_Name_Select_List($_users_name_list)
-                                                            .'</div>'
-                                                            .'<button type="submit" value="changeRights" name="do">Select</button>'
-                                                            .'<input type="hidden"  name="access"  value="select"/>'
-                                                            .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
-                                                        .'</form>'
-
-
-                                                        .'<form action="'.$this->__action.'" method="post">'
-                                                        .'<button type="submit" value="changeRights" name="do">Public</button>'
-                                                        .'<input type="hidden"  name="access"  value="public"/>'
-                                                        .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
-                                                        . '</form>		
-                                                  </td>
-                                              </tr>
-                                              <tr>
-                                                  <td align="center">
-                                                      <table >
-                                                          <tr>
-
-                                                          </tr>			
-                                                      </table>
-                                                  </td>
-                                              </tr>
-                                          </table>
-										</div>
-
-						</body>
-					</html>';
+		<div class="login">
+		<table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">
+                               <tr>
+                               <td align="center" width="auto">
+                               <form action="'.$this->__action.'" method="post">'
+                                .'<button type="submit" value="changeRights" name="do">Privat</button>'
+                                .'<input type="hidden"  name="access"  value="privat"/>'
+                                .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                                .'</form>
+				</td>
+				<td align="center" width="auto">
+				<form action="'.$this->__action.'" method="post">'
+                                .'<button type="submit" value="changeRights" name="do">Public</button>'
+                                .'<input type="hidden"  name="access"  value="public"/>'
+                                .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
+                                . '</form>
+				</td>
+				 </tr>
+				 </table>'
+				.$this->Users_Name_Select_List($_users_name_list,$file).'
+				</div>
+				</body>
+				</html>';
     
         return $form;
     } 
