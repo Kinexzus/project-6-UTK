@@ -311,7 +311,7 @@ class _Print //Класс содержащий методы реализации
 	 $users_name_select_list_select_rw = '';
 	 $users_name_select_list_select__ = '';
 	   
-	$form = '<table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto"><tr><td>Чтение</td><td>Запись</td><td>Чтение/Запись</td><td>-/-</td></tr>';
+	$form = '<table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto"><tr><td>Чтение</td></tr>';/*<td>Запись</td><td>Чтение/Запись</td><td>-/-</td>'</tr>'*/
 
         foreach ($users_name_list as $value) //создаём список пользователей
         {
@@ -319,7 +319,7 @@ class _Print //Класс содержащий методы реализации
             ++$i;
         }
 	
-	foreach ($users_name_list as $value) //создаём список пользователей
+	/*foreach ($users_name_list as $value) //создаём список пользователей
         {
             $users_name_select_list_select_w.= '<p><input type="checkbox" name="-w'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
             ++$i;
@@ -335,7 +335,7 @@ class _Print //Класс содержащий методы реализации
         {
             $users_name_select_list_select__.= '<p><input type="checkbox" name="--'.strval($i).'" value="'.$value.'"> '.$value.'</p><br>';
             ++$i;
-        }
+        }*/
 	
 		$form .= '<tr>
 		<td>
@@ -347,8 +347,9 @@ class _Print //Класс содержащий методы реализации
                  .'<input type="hidden"  name="access"  value="select"/>'
                  .'<input type="hidden"  name="file_path"  value="'.$file.'"/>'
                  .'</form>
-		 </td>
-		 <td>
+		 </td></tr>
+		 </table>';
+		 /*<td>
 		 <form action="'.$this->__action.'" method="post">'
                 .'<div style=" height: 400px; overflow:auto;">'
                  .$users_name_select_list_select_w
@@ -380,7 +381,7 @@ class _Print //Класс содержащий методы реализации
 		 </td>
 		 </tr>
 		 </table>';
-	    
+	    */
 	return $form;
     }
     
