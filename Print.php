@@ -130,7 +130,6 @@ class _Print //Класс содержащий методы реализации
 	//$directory_contents - массив содержимого дериктории ,$is_owner - параметр определяющий является ли пользователь владельцем
     private function File_Form_Creater($directory_contents,$is_owner) // Функция возвращающая список контента директории
     {
-	    var_dump($directory_contents);
         $file_arr = $directory_contents;
         $upath = $file_arr[0];
         unset($file_arr[0]); // Отделяем путь до директории 
@@ -149,24 +148,28 @@ class _Print //Класс содержащий методы реализации
                     $fuctional = '<td bgcolor="#38E54F"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value['name'].'&do=download"> Скачать </a></td>' //добавление возможностей: скачивание, удаление, смена прав
 			.'<td bgcolor="#DA0791">'. '<a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
 			$form .= '<tr align="center" bgcolor="#85C6FF"><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
+			continue;
                 }
                 
 		else if($value['access_rights'] == 'r-')
 		{
 			$fuctional = '<td bgcolor="#38E54F"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value['name'].'&do=download"> Скачать </a></td>'; //добавление возможностей: скачивание
 			$form .= '<tr align="center" bgcolor="#85C6FF"><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
+			 continue;
 		}
 		else if($value['access_rights'] == '-w')
 		{	
 			//добавление возможностей: удаление
 			$fuctional = '<td bgcolor="#DA0791">'. '<a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td>';
 			$form .= '<tr align="center" bgcolor="#85C6FF"><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
+			 continue;
 		}
 		else if($value['access_rights'] == 'rw')
 		{
 			$fuctional = '<td bgcolor="#38E54F"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value['name'].'&do=download"> Скачать </a></td>' //добавление возможностей: скачивание, удаление
 			.'<td bgcolor="#DA0791">'. '<a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>';
 			$form .= '<tr align="center" bgcolor="#85C6FF"><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
+			 continue;
 		}
 		
                 
@@ -179,22 +182,26 @@ class _Print //Класс содержащий методы реализации
                 {
                     $fuctional = '<td bgcolor="#808080"></td><td bgcolor="#DA0791"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td><td bgcolor="#DAD907"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=changeRightsMenu"> Изменить права доступа </a></td>'; //добавление возможностей:удаление, смена прав
 		    $form.= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$upath.'\\'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></td>'.$fuctional.'</tr>';
+		     continue;
                 }
                 
 		else if($value['access_rights'] == 'r-')
 		{
 			 $fuctional = ''; //добавление возможностей:чтение 
-		    $form.= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$upath.'\\'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></td>'.$fuctional.'</tr>';
+			$form.= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$upath.'\\'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></td>'.$fuctional.'</tr>';
+			continue;
 		}
 		else if($value['access_rights'] == '-w')
 		{
 			 $fuctional = '<td bgcolor="#808080"></td><td bgcolor="#DA0791"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td>'; //добавление возможностей:удаление
-		    $form.= '<tr align="center"><td bgcolor="#808080" >'. $value[ 'name' ] .'</td>'.$fuctional.'</tr>';
+			$form.= '<tr align="center"><td bgcolor="#808080" >'. $value[ 'name' ] .'</td>'.$fuctional.'</tr>';
+			 continue;
 		}
 		else if($value['access_rights'] == 'rw')
 		{
 			 $fuctional = '<td bgcolor="#808080"></td><td bgcolor="#DA0791"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td>'; //добавление возможностей:удаление
 			$form.= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$upath.'\\'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></td>'.$fuctional.'</tr>';
+			 continue;
 		}
 	
             }
