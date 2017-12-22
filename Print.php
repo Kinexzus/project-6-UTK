@@ -171,7 +171,12 @@ class _Print //Класс содержащий методы реализации
 			$form .= '<tr align="center" bgcolor="#85C6FF"><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
 			 continue;
 		}
-		
+		else if($value['access_rights'] == '--')
+		{
+			$fuctional = '';
+			$form .= '<tr align="center" bgcolor="#85C6FF"><td><p>'.$value['name']." ".'</p><div></td>'.$fuctional.'</tr>';
+			 continue;
+		}
                 
             }
 			
@@ -201,6 +206,12 @@ class _Print //Класс содержащий методы реализации
 		{
 			 $fuctional = '<td bgcolor="#808080"></td><td bgcolor="#DA0791"><a href = "'.$this->__action.'?file_path='.$upath.'\\'.$value[ 'name' ].'&do=delete"> Удалить </a> '.'</td>'; //добавление возможностей:удаление
 			$form.= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path='.$upath.'\\'.$value[ 'name' ].'&do=openDir">'. $value[ 'name' ] .'</a></td>'.$fuctional.'</tr>';
+			 continue;
+		}
+		else if($value['access_rights'] == '--')
+		{
+			 $fuctional = '';
+			$form.= '<tr align="center"><td bgcolor="#808080" >'. $value[ 'name' ] .'</td>'.$fuctional.'</tr>';
 			 continue;
 		}
 	
