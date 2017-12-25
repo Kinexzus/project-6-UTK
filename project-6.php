@@ -29,7 +29,7 @@ switch ($_REQUEST['do']){
     case 'login':{
         $login = $_REQUEST['login'];
         $password = $_REQUEST['password'];
-        //var_dump($_REQUEST);
+        var_dump($_REQUEST);
         $cloud->login($login, $password);
         exit;
     }
@@ -75,25 +75,30 @@ switch ($_REQUEST['do']){
     case 'changeRights':{
         $clpath = $_REQUEST['file_path'];
 
-        if(isset($_REQUEST['access']))
-        {
-            if($_REQUEST['access'] == 'privat')
-            {
-                $cloud->changeRights($clpath, []);
-                exit;
-            }
-            if($_REQUEST['access'] == 'public')
-            {
-                $cloud->changeRights($clpath, NULL);
-                exit;
-            }
+        if($_REQUEST['access'] == 'privat') {
+            $cloud->changeRights($clpath, []);
+            exit;
+        }
+        if($_REQUEST['access'] == 'public') {
+            $cloud->changeRights($clpath, NULL);
+            exit;
+        }
+
+        if($_REQUEST['access'] == 'select') {
+            $users = array();
+
+            foreach ($_REQUEST as $param_index => $param)
+                if(strpos($param_index, 'r-') !== false)
+                    $users[] = $param;
+
+            $cloud->changeRights($clpath, $users);
+            exit;
         }
 
 
-
         $users = array();
-        for($i = 1; isset($_REQUEST["Param$i"]); ++$i)
-            $users[] = $_REQUEST["Param$i"];
+        for($i = 1; isset($_REQUEST["r-$i"]); ++$i)
+            $users[] = $_REQUEST["r-$i"];
 
         $cloud->changeRights($clpath, $users);
         exit;
