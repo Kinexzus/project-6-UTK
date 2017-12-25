@@ -260,7 +260,7 @@ class _Print //Класс содержащий методы реализации
     {
         $Create_Dir = "";
         $Upload_File = "";
-        
+        var_dump($access);
         if($is_owner === TRUE) // если владелец, то добавляем создание директории и подгрузку файлов 
         {
             $Create_Dir = $this->Create_Dir_Form($path);		
@@ -293,7 +293,7 @@ class _Print //Класс содержащий методы реализации
 						<td bgcolor="#DAD907" width="50%"><a href = "'.$this->__action.'?file_path='.$path.'&do=changeRightsMenu"> Изменить права доступа </a></td>
 					</tr>
 				</table>'
-				.$this->Users_List($_users_name_list, $user, $access, $is_owner).'
+				.$this->Users_List($_users_name_list,$access).'
                 <table width="100%" height="auto" border="2">
 					<tr>
 						<td align="center">'
@@ -438,13 +438,13 @@ class _Print //Класс содержащий методы реализации
         return $form;
     } 
     
-	//$_users_name_list - массив пользователей обачного хранилища $access - массив прав доступа, user - имя текущего пользователя, is_owner - владелец?
-    private function Users_List($_users_name_list , $user, $access) // Функция создаёт таблицу пользователь для перехода по каталогам других пользователей хранилища
+	//$_users_name_list - массив пользователей обачного хранилища $access - массив прав доступа
+    private function Users_List($_users_name_list , $access) // Функция создаёт таблицу пользователь для перехода по каталогам других пользователей хранилища
     {
         $html = '<div style=" height: 800px; overflow:auto;"><table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">';
         foreach ($_users_name_list as $value) 
         {
-	    if(isset($access[$value][ $user]) && $access[$value][ $user] == "rw" || isset($access[$value][ $user]) && $access[$value][ $user] == "r-")
+	    if($access[$value] == "rw" || $access[$value] == "r-")
             {
 		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td></tr>';
 	    }
