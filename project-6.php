@@ -29,7 +29,6 @@ switch ($_REQUEST['do']){
     case 'login':{
         $login = $_REQUEST['login'];
         $password = $_REQUEST['password'];
-        var_dump($_REQUEST);
         $cloud->login($login, $password);
         exit;
     }
