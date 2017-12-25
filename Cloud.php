@@ -417,7 +417,7 @@ class Cloud
             return;
         }
 
-        $users = $this->authorizater->getUsers();
+        $users = $this->authorizater->getUsers($user);
 
         foreach ($users as $index => $login)
             if($login == $user)
