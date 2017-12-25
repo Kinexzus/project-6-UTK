@@ -68,6 +68,7 @@ switch ($_REQUEST['do']){
     case 'changeRightsMenu':{
         $clpath = $_REQUEST['file_path'];
 
+
         $cloud->printRightsMenu($clpath);
         exit;
     }

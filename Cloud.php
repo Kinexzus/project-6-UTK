@@ -12,21 +12,70 @@ class Cloud
     private $fileSystem;
     private $printer;
 
-    function __construct($__cloud_path, $__rights_path, $__users_path, $__action)
+    function __construct($__cloudPath, $__rightsPath, $__usersPath, $__action)
     {
-        $this->authorizater = new Authorizater($__users_path);
-        $this->fileSystem = new FileSystem($__cloud_path, $__rights_path);
+        $this->authorizater = new Authorizater($__usersPath);
+        $this->fileSystem = new FileSystem($__cloudPath, $__rightsPath);
         $this->printer = new _Print($__action);
 
         if(!$this->authorizater->loginExists('root'))
         {
             $this->authorizater->register('root', 'root', '');
             $this->fileSystem->addFile('\\', 'root');
-            //устанавливаем на нее дефолтные права
             $this->fileSystem->setRights("\\root", 'root', []);
         }
     }
 
+    /**
+     * Метод устанавливает путь к текущей директории
+     * @param string $__clpath
+     */
+    function setCurDir($__clpath = '')
+    {
+        if($__clpath === '')
+            setcookie('dir', '', time());
+
+        setcookie('dir', $__clpath);
+        return;
+    }
+
+    /**
+     * Метод возвращает путь к текущей директории
+     * @return string|bool
+     */
+    function getCurDir()
+    {
+        if(isset($_COOKIE['dir']))
+            return $_COOKIE['dir'];
+
+        return false;
+    }
+
+
+    /**
+     * Метод переводит пользователя в указанную директорию
+     * @param $__clpath
+     * @param $__user
+     */
+    function moveToDir($__clpath, $__user)
+    {
+        $dirInfo = $this->fileSystem->getList($__clpath, $__user);
+
+        $isOwner = ($this->fileSystem->getRight($__clpath, $__user)[1] == 'w');
+
+        $usersList = $this->authorizater->getUsers($__user);
+
+        $usersName_arr = $this->authorizater->getUsers($__user);
+        $accessToUsers = [];
+        foreach ($usersName_arr as $userName)
+            $accessToUsers[$userName] = $this->fileSystem->getRight("\\$userName", $__user);
+
+        $this->setCurDir($__clpath);
+
+        echo $this->printer->File_System_Interface_creater($__user, $dirInfo, $isOwner, $__clpath, $accessToUsers);
+
+        return;
+    }
 
     /**
      * Метод рисует страницу с формой регистрации
@@ -34,21 +83,13 @@ class Cloud
     function printRegistration()
     {
         $user = $this->authorizater->getLogin();
-        if (!$user)
+        if($user)
         {
-            echo $this->printer->Registration_form_creater();
+            $this->moveToDir("\\$user", $user);
             return;
         }
 
-        $dirInfo = $this->fileSystem->getList("\\$user", $user);
-        $users_list = $this->authorizater->getUsers($user);
-
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
-
-        //рисуем страничку с содержимым директории пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "\\$user", $users_list, $access_to_users);
+        echo $this->printer->Registration_form_creater();
         return;
     }
 
@@ -58,22 +99,13 @@ class Cloud
     function printLogin()
     {
         $user = $this->authorizater->getLogin();
-        if (!$user)
+        if($user)
         {
-            echo $this->printer->Log_Form_creater();
+            $this->moveToDir("\\$user", $user);
             return;
         }
 
-        $dirInfo = $this->fileSystem->getList("\\$user", $user);
-        $users_list = $this->authorizater->getUsers($user);
-
-
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
-
-        //рисуем страничку с содержимым директории пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, "\\$user", $users_list, $access_to_users);
+        echo $this->printer->Log_Form_creater();
         return;
     }
 
@@ -209,16 +241,8 @@ class Cloud
         $this->fileSystem->addFile('\\', $__login);
         //устанавливаем на нее дефолтные права
         $this->fileSystem->setRights("\\$__login", $__login, []);
-        //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList("\\$__login", $__login);
-        $users_list = $this->authorizater->getUsers($__login);
 
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $__login);
-
-        //рисуем страничку с содержимым директории пользователя
-        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login", $users_list, $access_to_users);
+        $this->moveToDir("\\$__login", $__login);
         return;
     }
 
@@ -239,16 +263,7 @@ class Cloud
         //автоизуем пользователя
         $this->authorizater->login($__login);
 
-        //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList("/$__login", $__login);
-        $users_list = $this->authorizater->getUsers($__login);
-
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $__login);
-
-        //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($__login, $dirInfo, true, "\\$__login", $users_list, $access_to_users);
+        $this->moveToDir("\\$__login", $__login);
         return;
     }
 
@@ -257,6 +272,7 @@ class Cloud
      */
     function logout()
     {
+        $this->setCurDir();
         $this->authorizater->logout();
 
         echo $this->printer->Log_Form_creater();
@@ -265,7 +281,7 @@ class Cloud
 
 
     /**
-     * Метод переводит пользователя в заданную директорию
+     * Метод переводит текущего пользователя в заданную директорию
      * @param string $__clpath - путь к директории
      */
     function openDir($__clpath)
@@ -277,19 +293,7 @@ class Cloud
             return;
         }
 
-        $rights = $this->fileSystem->getRight($__clpath, $user);
-
-        //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList($__clpath, $user);
-        $is_owner = ($rights[1] == 'w');
-        $users_list = $this->authorizater->getUsers($user);
-
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
-
-        //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, $is_owner, $__clpath, $users_list, $access_to_users);
+        $this->moveToDir($__clpath, $user);
         return;
     }
 
@@ -311,15 +315,8 @@ class Cloud
         $file_path = $file_path = $this->fileSystem->addFile($__clpath, $__dir_name);
         $this->fileSystem->setRights($file_path, $user, []);
 
-        //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList($__clpath, $user);
-        $users_list = $this->authorizater->getUsers($user);
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
-
-        //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath, $users_list, $access_to_users);
+        $curPath = $this->getCurDir();
+        $this->moveToDir($curPath, $user);
         return;
     }
 
@@ -342,15 +339,8 @@ class Cloud
         $file_path = $this->fileSystem->addFile($__clpath, $__file_name, $__tmp_name);
         $this->fileSystem->setRights($file_path, $user, []);
 
-        //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList($__clpath, $user);
-        $users_list = $this->authorizater->getUsers($user);
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
-
-        //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $__clpath, $users_list, $access_to_users );
+        $curPath = $this->getCurDir();
+        $this->moveToDir($curPath, $user);
         return;
     }
 
@@ -389,17 +379,8 @@ class Cloud
         $this->fileSystem->removeFile($__clpath);
         $this->fileSystem->delFileRights($__clpath);
 
-        //получаем информацию о содержимом папки пользователя
-        $dirs = explode('\\', $__clpath);
-        array_pop($dirs);
-        $clpath = implode('\\', $dirs);
-        $dirInfo = $this->fileSystem->getList($clpath, $user);
-        $users_list = $this->authorizater->getUsers($user);
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
-        //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $clpath, $users_list, $access_to_users);
+        $curPath = $this->getCurDir();
+        $this->moveToDir($curPath, $user);
         return;
     }
 
@@ -444,18 +425,8 @@ class Cloud
         $this->fileSystem->changeRights($__clpath, $__users);
 
 
-        $dirs = explode('\\', $__clpath);
-        array_pop($dirs);
-        $back_clpath = implode('\\', $dirs);
-
-        //получаем информацию о содержимом папки пользователя
-        $dirInfo = $this->fileSystem->getList($back_clpath, $user);
-        $users_list = $this->authorizater->getUsers($user);
-        $access_to_users = [];
-        foreach ($users_list as $u)
-            $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
-        //рисуем страничку с содержимым папки пользователя
-        echo $this->printer->File_System_Interface_creater($user, $dirInfo, true, $back_clpath, $users_list, $access_to_users);
+        $curPath = $this->getCurDir();
+        $this->moveToDir($curPath, $user);
         return;
     }
 }
