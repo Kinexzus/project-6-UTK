@@ -132,7 +132,7 @@ class Authorizater
      * Метод возвращает список всех пользователей, зарегестрированных в системе
      * @return array
      */
-    function getUsers()
+    function getUsers($__user)
     {
         $users = [];
         $user = $this->getLogin();
@@ -142,8 +142,13 @@ class Authorizater
             if(!$str)
                 continue;
             $data = explode('::', $str);
-            if(isset($data[0]))
-                $users[] = $data[0];
+            if(isset($data[0])){
+                if($data[0] == 'root' && $__user == 'root')
+                    $users[] = $data[0];
+                elseif($data[0] != 'root')
+                    $users[] = $data[0];
+            }
+
         }
 
         return $users;

@@ -260,7 +260,7 @@ class _Print //Класс содержащий методы реализации
     {
         $Create_Dir = "";
         $Upload_File = "";
-        var_dump($access);
+        
         if($is_owner === TRUE) // если владелец, то добавляем создание директории и подгрузку файлов 
         {
             $Create_Dir = $this->Create_Dir_Form($path);		

@@ -33,7 +33,7 @@ class Cloud
         }
 
         $dirInfo = $this->fileSystem->getList("\\$user", $user);
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($user);
 
         $access_to_users = [];
         foreach ($users_list as $u)
@@ -57,7 +57,7 @@ class Cloud
         }
 
         $dirInfo = $this->fileSystem->getList("\\$user", $user);
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($user);
 
 
         $access_to_users = [];
@@ -203,7 +203,7 @@ class Cloud
         $this->fileSystem->setRights("\\$__login", $__login, []);
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList("\\$__login", $__login);
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($__login);
 
         $access_to_users = [];
         foreach ($users_list as $u)
@@ -233,7 +233,7 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList("/$__login", $__login);
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($__login);
 
         $access_to_users = [];
         foreach ($users_list as $u)
@@ -274,7 +274,7 @@ class Cloud
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($__clpath, $user);
         $is_owner = ($rights[1] == 'w');
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($user);
 
         $access_to_users = [];
         foreach ($users_list as $u)
@@ -305,7 +305,7 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($__clpath, $user);
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($user);
         $access_to_users = [];
         foreach ($users_list as $u)
             $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
@@ -336,7 +336,7 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($__clpath, $user);
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($user);
         $access_to_users = [];
         foreach ($users_list as $u)
             $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
@@ -386,7 +386,7 @@ class Cloud
         array_pop($dirs);
         $clpath = implode('\\', $dirs);
         $dirInfo = $this->fileSystem->getList($clpath, $user);
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($user);
         $access_to_users = [];
         foreach ($users_list as $u)
             $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
@@ -442,7 +442,7 @@ class Cloud
 
         //получаем информацию о содержимом папки пользователя
         $dirInfo = $this->fileSystem->getList($back_clpath, $user);
-        $users_list = $this->authorizater->getUsers();
+        $users_list = $this->authorizater->getUsers($user);
         $access_to_users = [];
         foreach ($users_list as $u)
             $access_to_users[$u] = $this->fileSystem->getRight("\\$u", $user);
