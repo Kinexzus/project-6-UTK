@@ -17,6 +17,14 @@ class Cloud
         $this->authorizater = new Authorizater($__users_path);
         $this->fileSystem = new FileSystem($__cloud_path, $__rights_path);
         $this->printer = new _Print($__action);
+
+        if(!$this->authorizater->loginExists('root'))
+        {
+            $this->authorizater->register('root', 'root', '');
+            $this->fileSystem->addFile('\\', 'root');
+            //устанавливаем на нее дефолтные права
+            $this->fileSystem->setRights("\\root", 'root', []);
+        }
     }
 
 
