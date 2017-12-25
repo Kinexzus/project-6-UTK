@@ -255,9 +255,10 @@ class _Print //Класс содержащий методы реализации
         return $form;
     }
     
-	//$user - имя пользователя , $directory_contents - массив содержимого дериктории,$is_owner - параметр определяющий является ли пользователь владельцем , $path - путь до директории, $_users_name_list - список имён пользователей
-    public function File_System_Interface_creater($user, $directory_contents,$is_owner, $path, $_users_name_list, $access) //Функция отображающая графическое представление файлов системы
+	//$user - имя пользователя , $directory_contents - массив содержимого дериктории,$is_owner - параметр определяющий является ли пользователь владельцем , $path - путь до директории
+    public function File_System_Interface_creater($user, $directory_contents,$is_owner, $path, $access) //Функция отображающая графическое представление файлов системы
     {
+	 
         $Create_Dir = "";
         $Upload_File = "";
 
@@ -293,7 +294,7 @@ class _Print //Класс содержащий методы реализации
 						<td bgcolor="#DAD907" width="50%"><a href = "'.$this->__action.'?file_path='.$path.'&do=changeRightsMenu"> Изменить права доступа </a></td>
 					</tr>
 				</table>'
-				.$this->Users_List($_users_name_list,$access).'
+				.$this->Users_List($access).'
                 <table width="100%" height="auto" border="2">
 					<tr>
 						<td align="center">'
@@ -439,18 +440,18 @@ class _Print //Класс содержащий методы реализации
     } 
     
 	//$_users_name_list - массив пользователей обачного хранилища $access - массив прав доступа
-    private function Users_List($_users_name_list , $access) // Функция создаёт таблицу пользователь для перехода по каталогам других пользователей хранилища
+    private function Users_List($access) // Функция создаёт таблицу пользователь для перехода по каталогам других пользователей хранилища
     {
         $html = '<div style=" height: 800px; overflow:auto;"><table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">';
-        foreach ($_users_name_list as $value) 
+        foreach ($access as $key => $value) 
         {
-	    if($access[$value] == "rw" || $access[$value] == "r-")
+	    if($value == "rw" || $value == "r-")
             {
-		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td></tr>';
+		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$key.'&do=openDir">'. $key .'</a></td></tr>';
 	    }
 	    else
 	    {
-		$html .= '<tr align="center"><td bgcolor="#808080" >'. $value .'</td></tr>';    
+		$html .= '<tr align="center"><td bgcolor="#808080" >'. $key .'</td></tr>';    
 	    }
         }
         
