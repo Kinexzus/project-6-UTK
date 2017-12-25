@@ -444,17 +444,13 @@ class _Print //Класс содержащий методы реализации
         $html = '<div style=" height: 800px; overflow:auto;"><table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">';
         foreach ($_users_name_list as $value) 
         {
-	    if($value == $user)
-	    {
-		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td><td><a href = "'.$this->__action.'?file_path=\\'.$value.'&do=changeRightsMenu"> Изменить права доступа </a></td></tr>';
-	    }
-	    else if(isset($access[$value][ $user]) && $access[$value][ $user] == "rw" || isset($access[$value][ $user]) && $access[$value][ $user] == "r-")
+	    if(isset($access[$value][ $user]) && $access[$value][ $user] == "rw" || isset($access[$value][ $user]) && $access[$value][ $user] == "r-")
             {
-		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td><td></td></tr>';
+		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td></tr>';
 	    }
 	    else
 	    {
-		$html .= '<tr align="center"><td bgcolor="#808080" >'. $value .'</td><td></td></tr>';    
+		$html .= '<tr align="center"><td bgcolor="#808080" >'. $value .'</td></tr>';    
 	    }
         }
         
