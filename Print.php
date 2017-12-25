@@ -439,23 +439,22 @@ class _Print //Класс содержащий методы реализации
     } 
     
 	//$_users_name_list - массив пользователей обачного хранилища $access - массив прав доступа, user - имя текущего пользователя, is_owner - владелец?
-    private function Users_List($_users_name_list , $user, $access, $is_owner) // Функция создаёт таблицу пользователь для перехода по каталогам других пользователей хранилища
+    private function Users_List($_users_name_list , $user, $access) // Функция создаёт таблицу пользователь для перехода по каталогам других пользователей хранилища
     {
         $html = '<div style=" height: 800px; overflow:auto;"><table width="100%" bgcolor="#808080"  cellspacing="4" border="6" cellpadding="7" height="auto">';
-	$function = '';
         foreach ($_users_name_list as $value) 
         {
-	    if($is_owner)
+	    if($value == $user)
 	    {
-		$function = '<a href = "'.$this->__action.'?file_path=\\'.$value.'&do=changeRightsMenu"> Изменить права доступа </a>';
+		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td><td><a href = "'.$this->__action.'?file_path=\\'.$value.'&do=changeRightsMenu"> Изменить права доступа </a></td></tr>';
 	    }
-	    if(isset($access[$value][ $user]) && $access[$value][ $user] == "rw" || isset($access[$value][ $user]) && $access[$value][ $user] == "r-")
+	    else if(isset($access[$value][ $user]) && $access[$value][ $user] == "rw" || isset($access[$value][ $user]) && $access[$value][ $user] == "r-")
             {
-		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td><td>'.$function.'</td></tr>';
+		$html .= '<tr align="center"><td bgcolor="#808080" ><a href = "'.$this->__action.'?path=\\'.$value.'&do=openDir">'. $value .'</a></td><td></td></tr>';
 	    }
 	    else
 	    {
-		$html .= '<tr align="center"><td bgcolor="#808080" >'. $value .'</td><td>'.$function.'</td></tr>';    
+		$html .= '<tr align="center"><td bgcolor="#808080" >'. $value .'</td><td></td></tr>';    
 	    }
         }
         
