@@ -76,7 +76,7 @@ class FileSystem
      */
     function getRight($__clpath, $__user)
     {
-        if($__user == 'root')
+        if($__user === 'root')
             return 'rw';
 
         $file = fopen($this->rights_path, 'r');

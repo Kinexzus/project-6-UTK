@@ -19,6 +19,7 @@ class Cloud
         $this->printer = new _Print($__action);
     }
 
+
     /**
      * Метод рисует страницу с формой регистрации
      */
