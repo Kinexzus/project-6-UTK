@@ -258,11 +258,10 @@ class _Print //Класс содержащий методы реализации
 	//$user - имя пользователя , $directory_contents - массив содержимого дериктории,$is_owner - параметр определяющий является ли пользователь владельцем , $path - путь до директории
     public function File_System_Interface_creater($user, $directory_contents,$is_owner, $path, $access) //Функция отображающая графическое представление файлов системы
     {
-	 
         $Create_Dir = "";
         $Upload_File = "";
-
-        if($is_owner === TRUE) // если владелец, то добавляем создание директории и подгрузку файлов 
+	
+        if($is_owner !== false) // если владелец, то добавляем создание директории и подгрузку файлов 
         {
             $Create_Dir = $this->Create_Dir_Form($path);		
             $Upload_File = $this->Upload_File_Form($path);
@@ -298,10 +297,10 @@ class _Print //Класс содержащий методы реализации
                 <table width="100%" height="auto" border="2">
 					<tr>
 						<td align="center">'
-							.$this->Create_Dir_Form($path).
+							.$Create_Dir.
 						'</td>
 						<td align="center">'
-							.$this->Upload_File_Form($path).'			
+							.$Upload_File.'			
 						</td>
 					</tr>
                  </table>'
