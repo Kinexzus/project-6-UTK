@@ -23,10 +23,20 @@ class _Print //Класс содержащий методы реализации
             $html = '
             <html lang="en" >
             <head>
-			 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-			  <link rel="stylesheet" type="text/css" href="log%reg.css">
-				<title>Cloud Storage</title>
-             
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" href="log%reg.css">
+		<title>Cloud Storage</title>
+		<script type="text/javascript">
+		function validateForm()
+		{
+			var x=document.forms["myForm"]["login"].value;
+			if (x==null || x=="")
+			{
+				alert("Имя обязательно должно быть введено");
+				return false;
+			}
+		}
+		</script>
             </head>
 
             <body>
@@ -37,14 +47,14 @@ class _Print //Класс содержащий методы реализации
                             </div>
                             <br>
                             <div class="login">
-                                            <form method="POST" action="'.$this->__action.'">
+                                <form method="POST" action="'.$this->__action.'" onsubmit="return validateForm()">
                                 <input type="text" placeholder="Login" name="login" value="'.$login.'">
                                 <input type="password" placeholder="Password" name="password">
                                 <input type="password" placeholder="Conferm" name="passwordcheck">
                                <input type="text" placeholder="mail" name="mail" value="'.$mail.'">
-                                                    <input type="submit" value="register" name="do">
-                                                    <input type="submit" value="authorization" name="do">
-                                                    '.$error_out.'
+                               <input type="submit" value="register" name="do">
+                                <input type="submit" value="authorization" name="do">
+                                '.$error_out.'
                                 </form>
                             </div>
               

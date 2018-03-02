@@ -56,6 +56,7 @@ switch ($_REQUEST['do']){
     case 'makeDir':{
         $dir_name = $_REQUEST['dir_name'];
         $clpath = $clpath = $_REQUEST['path'];
+	
         $cloud->makeDir($clpath, $dir_name);
         exit;
     }

@@ -57,7 +57,7 @@ class Cloud
      * @param $__clpath
      * @param $__user
      */
-    function moveToDir($__clpath, $__user)
+    function moveToDir($__clpath, $__user, $error)
     {
         $dirInfo = $this->fileSystem->getList($__clpath, $__user);
 
@@ -72,7 +72,7 @@ class Cloud
 
         $this->setCurDir($__clpath);
 
-        echo $this->printer->File_System_Interface_creater($__user, $dirInfo, $isOwner, $__clpath, $accessToUsers);
+        echo $this->printer->File_System_Interface_creater($__user, $dirInfo, $isOwner, $__clpath, $accessToUsers,  $error);
 
         return;
     }
@@ -85,7 +85,7 @@ class Cloud
         $user = $this->authorizater->getLogin();
         if($user)
         {
-            $this->moveToDir("\\$user", $user);
+            $this->moveToDir("\\$user", $user , "");
             return;
         }
 
@@ -101,7 +101,7 @@ class Cloud
         $user = $this->authorizater->getLogin();
         if($user)
         {
-            $this->moveToDir("\\$user", $user);
+            $this->moveToDir("\\$user", $user , "");
             return;
         }
 
@@ -242,7 +242,7 @@ class Cloud
         //устанавливаем на нее дефолтные права
         $this->fileSystem->setRights("\\$__login", $__login, []);
 
-        $this->moveToDir("\\$__login", $__login);
+        $this->moveToDir("\\$__login", $__login, "");
         return;
     }
 
@@ -263,7 +263,7 @@ class Cloud
         //автоизуем пользователя
         $this->authorizater->login($__login);
 
-        $this->moveToDir("\\$__login", $__login);
+        $this->moveToDir( "\\$__login", $__login, "");
         return;
     }
 
@@ -293,7 +293,7 @@ class Cloud
             return;
         }
 
-        $this->moveToDir($__clpath, $user);
+        $this->moveToDir( $__clpath, $user, "");
         return;
     }
 
@@ -311,13 +311,19 @@ class Cloud
             echo $this->printer->Log_Form_creater();
             return;
         }
-
-        $file_path = $file_path = $this->fileSystem->addFile($__clpath, $__dir_name);
-        $this->fileSystem->setRights($file_path, $user, []);
-
-        $curPath = $this->getCurDir();
-        $this->moveToDir($curPath, $user);
-        return;
+	
+	if ( preg_match( "/[\||\'|\<|\>|\[|\]|\"|\!|\?|\$|\@|\#|\%|\^|\/|\\\|\&|\~|\*|\{|\}|\+|\_|\:|\.|\,|\;|\`|\=|\(|\)|\§|\°]/", $__dir_name, $matches) === true )
+	{
+		$this->moveToDir( $__clpath, $user, "Используются запрещённые символы");
+		return;
+	} else
+	{	
+	        $file_path = $file_path = $this->fileSystem->addFile($__clpath, $__dir_name);
+		$this->fileSystem->setRights($file_path, $user, []);
+		$curPath = $this->getCurDir();
+		$this->moveToDir( $curPath, $user,  "Ok");
+		return;
+	}
     }
 
 
@@ -340,7 +346,7 @@ class Cloud
         $this->fileSystem->setRights($file_path, $user, []);
 
         $curPath = $this->getCurDir();
-        $this->moveToDir($curPath, $user);
+        $this->moveToDir($curPath, $user, "");
         return;
     }
 
@@ -380,7 +386,7 @@ class Cloud
         $this->fileSystem->delFileRights($__clpath);
 
         $curPath = $this->getCurDir();
-        $this->moveToDir($curPath, $user);
+        $this->moveToDir($curPath, $user, "");
         return;
     }
 
@@ -426,7 +432,7 @@ class Cloud
 
 
         $curPath = $this->getCurDir();
-        $this->moveToDir($curPath, $user);
+        $this->moveToDir($curPath, $user, "");
         return;
     }
 }
